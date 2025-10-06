@@ -7,11 +7,11 @@ Für 5 PUNKTE! -->
 	BENJAMIN + KY ANH's - AWESOME ENVIRONMENT PROJECT
 
 • OUR NAMES:
-	BENJAMIN SCHULZE
+	BENJAMIN SCHULZ
 	KY ANH PHAM
 
 • Your Matrikel#(s),
-	B: S0
+	B: S0594271
 	K: S0586881
 
 • A short descripon of the app
