@@ -1,17 +1,22 @@
-# Node Express template project
+• The name of the app
 
-This project is based on a GitLab [Project Template](https://docs.gitlab.com/ee/user/project/#create-a-project-from-a-built-in-template).
+	BeKys-AEP
+	BENJAMIN + KY ANH's - AWESOME ENVIRONMENT PROJECT
 
-Improvements can be proposed in the [original project](https://gitlab.com/gitlab-org/project-templates/express).
+• OUR NAMES:
+	BENJAMIN SCHULZE
+	KY ANH PHAM
 
-## CI/CD with Auto DevOps
+• Your Matrikel#(s),
+	B: S0
+	K: S0586881
+• A short descripon of the app
 
-This template is compatible with [Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/).
+Das Projekt dokumentiert und visualisiert Orte und Standorte in Berlin, die als nicht-nachhaltig oder umweltfeindlich eingestuft werden, sowie Regionen, in denen es an essenzieller nachhaltiger Infrastruktur mangelt.
 
-If Auto DevOps is not already enabled for this project, you can [turn it on](https://docs.gitlab.com/ee/topics/autodevops/#enable-or-disable-auto-devops) in the project settings.
+Kern-Funktion:
+Die Anwendung ist eine Single Page Application (SPA), die eine Liste dieser Standorte darstellt und einen rollenbasierten Zugriff bietet:
 
-### Developing with Gitpod
+Admins können neue Standorte hinzufügen und bestehende Daten verwalten (CRUD-Operationen).
 
-This template has a fully-automated dev setup for [Gitpod](https://docs.gitlab.com/ee/integration/gitpod.html).
-
-If you open this project in Gitpod, you'll get all Node dependencies pre-installed.
+Normale Nutzer haben eine reine Leseansicht.
