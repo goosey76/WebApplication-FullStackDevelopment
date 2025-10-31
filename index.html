@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BEKY's AEP</title> <!-- AwesomeEnvironmentProject -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="parent">
+  <div class="div1">
+    <h1>AEP - Awesome Environment Project</h1>
+  </div>
+  <div class="main">
+    <h1>BeKy's AEP Login Page</h1>
+    <h3>Hier werden sachen bearbeitet.</h3>
+
+    <!-- Die Values von den Standorten -->
+    <form action="">
+      <label for="text">
+        Titel:
+      </label>
+      <input type="text" id="first" name="first"
+             placeholder="Wir klauen nicht deinen Namen, oder vllt doch?" required>
+
+      <label for="password">
+        Passwort:
+      </label>
+      <input type="text" id="password" name="password"
+             placeholder="Passwort auch nicht, oder vllt doch?" required>
+
+      <div class="wrap">
+        <button type="submit">
+          Login
+        </button>
+      </div>
+    </form>
+
+    <p> Noch nicht registriert???
+      <a href="#" style="text-decoration: none;">
+        Registriere dich hier, vllt doch?:)
+      </a>
+    </p>
+  </div>
+
+  <br>
+
+  <!-- Die Main-Seite -->
+  <div class="main">
+    <header>
+      <h2><i>Herzlich Willkommen lieber User. <br> Dies ist BeKy's Awesome Environment Project.</i></h2>
+    </header>
+    <h1>Standorte</h1>
+
+    <hr>
+    <hr>
+
+    <!-- Die Liste mit den Standorten -->
+    <article>
+      <h3>Blockierter Radweg an der HTW</h3>
+      <p><strong>Beschreibung:</strong> Hier endet eine Fahrradwegmarkierung. Der weiterführende Radweg wird von parkenden PKWs blockiert.</p>
+      <p><strong>Adresse:</strong> Ostendstr. 35, 12459 Berlin</p>
+      <p><strong>Kategorie:</strong> Fahrrad</p>
+    </article>
+    <hr>
+    <article>
+      <h3>Radweg endet auf enger Straße (kein Mindestabstand)</h3>
+      <p><strong>Beschreibung:</strong> Hier endet ein Fahrradweg direkt nach einer Kreuzung. Passierende Autos und Fahrradfahrer kommen sich in die Quere, und der Mindestabstand zueinander kann nicht eingehalten werden.</p>
+      <p><strong>Adresse:</strong> Roelckestraße 69, 13086 Berlin</p>
+      <p><strong>Kategorie:</strong> Fahrrad</p>
+    </article>
+    <hr>
+    <article>
+      <h3>Ersatzverkehr in Marzahn</h3>
+      <p><strong>Beschreibung:</strong> Aufgrund notwendiger Brückenbauarbeiten auf den Linien (Tram M16 & M6) fährt Ersatzverkehr zwischen Landsberger Allee/Rhinstraße <-> S Marzahn.</p>
+      <p><strong>Adresse:</strong> S Marzahn, 12679 Berlin</p>
+      <p><strong>Kategorie:</strong> ÖPNV</p>
+    </article>
+
+    <div class="wrap">
+      <button type="submit">
+        Standort hinzufügen
+      </button>
+      <button type="submit">
+        Ausloggen
+      </button>
+    </div>
+
+
+    <footer>
+      BeKy’s AEP – Awesome Environment Project:
+      Ein Projekt zur Verbesserung der Umweltwahrnehmung in der Stadt.
+      <br><br>
+      Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV: <br>
+      Benjamin Schulz, Ky Anh Pham
+      <br><br>
+      HTW-Berlin
+      Wilhelminenhofstr. 75A
+    </footer>
+  </div>
+
+  <br>
+
+  <!-- Der Add-Screen -->
+  <div class="main">
+    <h1>Standort hinzufügen</h1>
+    <h3>HIER WERDEN NEUE STANDORTE HINZUGEFÜGT</h3>
+
+    <!-- Login Form Code -->
+    <form action="">
+      <!-- Titel -->
+      <label for="titel">
+        1. Titel: (*)
+      </label>
+      <input type="text" id="titel" name="titel"
+             placeholder="Welch ein Originaler Titel" required>
+
+      <!-- Standort -->
+      <label for="standort">
+        2. Beschreibung des Standorts:
+      </label>
+      <input type="text" id="standort" name="standort"
+             placeholder="Beschreibe den Standort">
+
+      <!-- Straße + Hausnummer -->
+      <label for="street+number">
+        3. Straße und Hausnummer: (*)
+      </label>
+      <input type="text" id="street+number" name="street+number"
+             placeholder="Die Straße und Hausnummer" required>
+
+
+      <!-- Straße + Hausnummer -->
+      <label for="plzStadt">
+        4. PLZ + Stadt: (*)
+      </label>
+      <input type="text" id="plzStadt" name="plzStadt"
+             placeholder="Die Postleitzahl und die Stadt" required>
+
+
+      <!-- Kategorie -->
+      <label for="category-select">5. Kategorie: (*)</label>
+      <select id="category-select" name="kategorie" required>
+        <option value="">-- Bitte wählen Sie eine Kategorie --</option>
+        <option value="Fahrrad">Fahrrad (Wege, Abschliessmöglichkeit)</option>
+        <option value="ÖPNV">ÖPNV</option>
+        <option value="Fußgänger:innen">Fußgänger:innen</option>
+        <option value="Straßenverkehr">Straßenverkehr(Baustellen, Verkehrsdichte)<</option>
+        <option value="Luft">Luft</option>
+        <option value="Industrieanlagen">Industrieanlagen</option>
+        <option value="Sonstige">Sonstige</option></option>
+      </select>
+
+      <!-- Bild hinzufügen -->
+      <label for="standortBild">
+        6. Bild des Standorts:
+      </label>
+      <input type="file" id="standortBild" name="standortBild" accept="image/*">
+
+      <!-- Geokoordinaten -->
+      <div class="coordinates-group">
+        <div>
+          <label for="breitenGrad">
+            Breitengrad:
+          </label>
+          <input type="text" id="breitenGrad" name="breitenGrad"
+                 readonly>
+        </div>
+
+        <div>
+          <label for="laengenGrad">
+            Längengrad:
+          </label>
+          <input type="text" id="laengenGrad" name="laengenGrad"
+                 readonly>
+        </div>
+      </div>
+
+
+      <div class="wrap">
+        <button type="submit">
+          Speichern
+        </button>
+        <button type="submit">
+          Abbrechen
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <br>
+
+  <div class="main">
+    <h1>DETAILS PAGE</h1>
+    <h3>HIER WERDEN DATEN BEARBEITET</h3>
+
+    <!-- Login Form Code -->
+    <form action="">
+      <!-- Titel -->
+      <label for="titel">
+        1. Titel: (*)
+      </label>
+      <input type="text" id="titel" name="titel"
+             placeholder="Welch ein Originaler Titel" value="Radweg endet auf enger Straße (kein Mindestabstand)" required>
+
+      <!-- Standort -->
+      <label for="standort">
+        2. Beschreibung des Standorts:
+      </label>
+      <input type="text" id="standort" name="standort"
+             placeholder="Beschreibe den Standort" value="Hier endet ein Fahrradweg direkt nach einer Kreuzung. Passierende Autos und Fahrradfahrer kommen sich in die Quere, und der Mindestabstand zueinander kann nicht eingehalten werden.">
+
+      <!-- Straße + Hausnummer -->
+      <label for="street+number">
+        3. Straße und Hausnummer: (*)
+      </label>
+      <input type="text" id="street+number" name="street+number"
+             placeholder="Die Straße und Hausnummer" value="Roelckestraße 69" required>
+
+
+      <!-- Straße + Hausnummer -->
+      <label for="plzStadt">
+        4. PLZ + Stadt: (*)
+      </label>
+      <input type="text" id="plzStadt" name="plzStadt"
+             placeholder="Die Postleitzahl und die Stadt" value="13086 Berlin" required>
+
+
+      <!-- Kategorie -->
+      <label for="category-select">5. Kategorie: (*)</label>
+      <select id="category-select" name="kategorie" required>
+        <option value="">-- Bitte wählen Sie eine Kategorie --</option>
+        <option value="Fahrrad">Fahrrad (Wege, Abschliessmöglichkeit)</option>
+        <option value="ÖPNV">ÖPNV</option>
+        <option value="Fußgänger:innen">Fußgänger:innen</option>
+        <option value="Straßenverkehr">Straßenverkehr(Baustellen, Verkehrsdichte)<</option>
+        <option value="Luft">Luft</option>
+        <option value="Industrieanlagen">Industrieanlagen</option>
+        <option value="Sonstige">Sonstige</option></option>
+      </select>
+
+      <!-- Bild hinzufügen -->
+      <label for="standortBild">
+        6. Bild des Standorts:
+      </label>
+      <input type="file" id="standortBild" name="standortBild" accept="image/*">
+
+      <div id="bildVorschau">
+        <img id="previewImage" src="standort2.png" alt="Vorschau des Bildes" style="width:50%; height:50%">
+      </div>
+
+      <!-- Geokoordinaten -->
+      <div class="coordinates-group">
+        <div>
+          <label for="breitenGrad">
+            Breitengrad:
+          </label>
+          <input type="text" id="breitenGrad" name="breitenGrad"
+                 readonly>
+        </div>
+
+        <div>
+          <label for="laengenGrad">
+            Längengrad:
+          </label>
+          <input type="text" id="laengenGrad" name="laengenGrad"
+                 readonly>
+        </div>
+      </div>
+      <div class="wrap">
+        <button type="submit">
+          Speichern
+        </button>
+        <button type="submit">
+          Löschen
+        </button>
+        <button type="submit">
+          Abbrechen
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>
