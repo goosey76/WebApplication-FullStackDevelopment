@@ -11,6 +11,13 @@ body {
   margin: 0;
 }
 
+/*
+Lässt Dinge verschwinden
+*/
+.hide {
+  display: none;
+}
+
 .main {
   background-color: #fff;
   border-radius: 15px;
@@ -24,7 +31,11 @@ body {
 footer {
   color: #555555;
   font-style: italic;
+  width: center;
+  text-align: center;
+  padding: 15px 0;
 }
+
 
 h1 {
   color: #4CAF50;
@@ -90,4 +101,5 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 10px;
 }

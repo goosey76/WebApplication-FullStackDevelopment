@@ -3,30 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>BEKY's AEP</title> <!-- AwesomeEnvironmentProject -->
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="public/style.css">
+    <script src="src/script.js"></script>
 </head>
-<body>
+<body onload="initializeApp()">
 
+  <!-- Der Header-->
 <div class="parent">
-  <div class="div1">
+  <div class="div1" id="appheader">
     <h1>AEP - Awesome Environment Project</h1>
   </div>
-  <div class="main">
+
+  <!-- Die Login-Seite -->
+  <div class="main" id="loginScreen">
     <h1>BeKy's AEP Login Page</h1>
     <h3>Hier werden sachen bearbeitet.</h3>
 
-    <!-- Die Values von den Standorten -->
+    <!-- Die Submission-Form -->
     <form action="">
       <label for="text">
-        Titel:
+        Benutzername:
       </label>
-      <input type="text" id="first" name="first"
+      <input type="text" id="nutzername" name="nutzername"
              placeholder="Wir klauen nicht deinen Namen, oder vllt doch?" required>
 
       <label for="password">
         Passwort:
       </label>
-      <input type="text" id="password" name="password"
+      <input type="password" id="password" name="password"
              placeholder="Passwort auch nicht, oder vllt doch?" required>
 
       <div class="wrap">
@@ -46,9 +50,9 @@
   <br>
 
   <!-- Die Main-Seite -->
-  <div class="main">
+  <div class="main hide" id="mainScreen">
     <header>
-      <h2><i>Herzlich Willkommen lieber User. <br> Dies ist BeKy's Awesome Environment Project.</i></h2>
+      <h2 id="welcomeMessage"><i>Herzlich Willkommen lieber User. <br> Dies ist BeKy's Awesome Environment Project.</i></h2>
     </header>
     <h1>Standorte</h1>
 
@@ -56,11 +60,18 @@
     <hr>
 
     <!-- Die Liste mit den Standorten -->
+    <!---->
+  <div id="locationList">
     <article>
       <h3>Blockierter Radweg an der HTW</h3>
       <p><strong>Beschreibung:</strong> Hier endet eine Fahrradwegmarkierung. Der weiterführende Radweg wird von parkenden PKWs blockiert.</p>
       <p><strong>Adresse:</strong> Ostendstr. 35, 12459 Berlin</p>
       <p><strong>Kategorie:</strong> Fahrrad</p>
+          <!-- Admin Controls hinzgefügt-->
+      <div class="wrap admin-controls hide"> 
+            <button type="button" class="add-btn">Hinzufügen</button>
+            <button type="button" class="delete-btn">Löschen</button>
+          </div>
     </article>
     <hr>
     <article>
@@ -68,6 +79,11 @@
       <p><strong>Beschreibung:</strong> Hier endet ein Fahrradweg direkt nach einer Kreuzung. Passierende Autos und Fahrradfahrer kommen sich in die Quere, und der Mindestabstand zueinander kann nicht eingehalten werden.</p>
       <p><strong>Adresse:</strong> Roelckestraße 69, 13086 Berlin</p>
       <p><strong>Kategorie:</strong> Fahrrad</p>
+                <!-- Admin Controls hinzgefügt-->
+      <div class="wrap admin-controls hide"> 
+            <button type="button" class="add-btn">Hinzufügen</button>
+            <button type="button" class="delete-btn">Löschen</button>
+          </div>
     </article>
     <hr>
     <article>
@@ -75,34 +91,29 @@
       <p><strong>Beschreibung:</strong> Aufgrund notwendiger Brückenbauarbeiten auf den Linien (Tram M16 & M6) fährt Ersatzverkehr zwischen Landsberger Allee/Rhinstraße <-> S Marzahn.</p>
       <p><strong>Adresse:</strong> S Marzahn, 12679 Berlin</p>
       <p><strong>Kategorie:</strong> ÖPNV</p>
+                <!-- Admin Controls hinzgefügt-->
+      <div class="wrap admin-controls hide"> 
+            <button type="button" class="add-btn">Hinzufügen</button>
+            <button type="button" class="delete-btn">Löschen</button>
+          </div>
     </article>
+  </div>
 
-    <div class="wrap">
-      <button type="submit">
+    <div class="wrap main-buttons">
+      <button type="button" id="addLocationButton" class=hide>
         Standort hinzufügen
       </button>
-      <button type="submit">
+      <button type="button" id="logoutButton">
         Ausloggen
       </button>
     </div>
-
-
-    <footer>
-      BeKy’s AEP – Awesome Environment Project:
-      Ein Projekt zur Verbesserung der Umweltwahrnehmung in der Stadt.
-      <br><br>
-      Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV: <br>
-      Benjamin Schulz, Ky Anh Pham
-      <br><br>
-      HTW-Berlin
-      Wilhelminenhofstr. 75A
-    </footer>
   </div>
+
 
   <br>
 
   <!-- Der Add-Screen -->
-  <div class="main">
+  <div class="main hide" id="addScreen">
     <h1>Standort hinzufügen</h1>
     <h3>HIER WERDEN NEUE STANDORTE HINZUGEFÜGT</h3>
 
@@ -176,7 +187,6 @@
         </div>
       </div>
 
-
       <div class="wrap">
         <button type="submit">
           Speichern
@@ -190,7 +200,8 @@
 
   <br>
 
-  <div class="main">
+  <!-- Der Details-Screen -->
+  <div class="main hide" id="detailsScreen">
     <h1>DETAILS PAGE</h1>
     <h3>HIER WERDEN DATEN BEARBEITET</h3>
 
@@ -281,5 +292,18 @@
     </form>
   </div>
 </div>
+
+<!-- Footer -->
+<footer id="appFooter">
+      BeKy’s AEP – Awesome Environment Project:
+      Ein Projekt zur Verbesserung der Umweltwahrnehmung in der Stadt.
+      Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV: <br>
+      <br>
+      Benjamin Schulz & Ky Anh Pham
+      <br><br>
+      HTW-Berlin
+      Wilhelminenhofstr. 75A
+      <p><a href="#">Impressum</a> | <a href="#">Datenschutzerklärung</a></p>
+    </footer>
 </body>
 </html>
