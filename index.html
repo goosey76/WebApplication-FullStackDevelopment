@@ -1,111 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>BEKY's AEP</title> <!-- AwesomeEnvironmentProject -->
-    <link rel="stylesheet" href="public/style.css">
-    <script src="src/script.js"></script>
+  <meta charset="UTF-8">
+  <title>BEKY's AEP</title> <!-- AwesomeEnvironmentProject -->
+  <link rel="stylesheet" href="public/style.css">
+  <script src="src/script.js"></script>
 </head>
 <body onload="initializeApp()">
 
-  <!-- Der Header-->
+<!-- Der Header (wird immer angezeigt) -->
+<header>
+  <h2>BeKy's Awesome Environment Project</h2>
+</header>
+
 <div class="parent">
-  <div class="div1" id="appheader">
-    <h1>AEP - Awesome Environment Project</h1>
-  </div>
 
-  <!-- Die Login-Seite -->
-  <div class="main" id="loginScreen">
-    <h1>BeKy's AEP Login Page</h1>
-    <h3>Hier werden sachen bearbeitet.</h3>
+  <!-- Die Login-Seite (nach erfolgreichem Login verstecken)-->
+  <div class="main login">
 
-    <!-- Die Submission-Form -->
+    <h1>BeKy's AEP</h1>
+    <h3>LOGIN</h3>
+
     <form action="">
-      <label for="text">
-        Benutzername:
+
+      <label for="username">
+        Username:
       </label>
-      <input type="text" id="nutzername" name="nutzername"
-             placeholder="Wir klauen nicht deinen Namen, oder vllt doch?" required>
+      <input type="text" id="username" name="username"
+             placeholder="Gib deinen Nutzernamen ein." required>
 
       <label for="password">
         Passwort:
       </label>
       <input type="password" id="password" name="password"
-             placeholder="Passwort auch nicht, oder vllt doch?" required>
+             placeholder="Gib dein Passwort ein." required>
 
       <div class="wrap">
-        <button type="submit">
+        <button id="loginButton" type="submit">
           Login
         </button>
       </div>
+
     </form>
 
-    <p> Noch nicht registriert???
+    <p> Du hast noch keinen Account?
       <a href="#" style="text-decoration: none;">
-        Registriere dich hier, vllt doch?:)
+        Hier registrieren.
       </a>
     </p>
   </div>
 
-  <br>
+  <!-- persönliche Willkommensnachricht -->
+  <p id="welcomeMessage" class="hide"></p>
+
+  <!-- Logout-Button -->
+  <button type="button" class="hide" id="logoutButton">
+    Ausloggen
+  </button>
 
   <!-- Die Main-Seite -->
   <div class="main hide" id="mainScreen">
-    <header>
-      <h2 id="welcomeMessage"><i>Herzlich Willkommen lieber User. <br> Dies ist BeKy's Awesome Environment Project.</i></h2>
-    </header>
     <h1>Standorte</h1>
 
     <hr>
     <hr>
 
+    <!-- TODO: Standorte formatieren, anklickbar machen => Detail-Screen öffen (admin-only-editable aber normalo kann halt sehen) -->
     <!-- Die Liste mit den Standorten -->
     <!---->
-  <div id="locationList">
-    <article>
-      <h3>Blockierter Radweg an der HTW</h3>
-      <p><strong>Beschreibung:</strong> Hier endet eine Fahrradwegmarkierung. Der weiterführende Radweg wird von parkenden PKWs blockiert.</p>
-      <p><strong>Adresse:</strong> Ostendstr. 35, 12459 Berlin</p>
-      <p><strong>Kategorie:</strong> Fahrrad</p>
-          <!-- Admin Controls hinzgefügt-->
-      <div class="wrap admin-controls hide"> 
-            <button type="button" class="add-btn">Hinzufügen</button>
-            <button type="button" class="delete-btn">Löschen</button>
-          </div>
-    </article>
-    <hr>
-    <article>
-      <h3>Radweg endet auf enger Straße (kein Mindestabstand)</h3>
-      <p><strong>Beschreibung:</strong> Hier endet ein Fahrradweg direkt nach einer Kreuzung. Passierende Autos und Fahrradfahrer kommen sich in die Quere, und der Mindestabstand zueinander kann nicht eingehalten werden.</p>
-      <p><strong>Adresse:</strong> Roelckestraße 69, 13086 Berlin</p>
-      <p><strong>Kategorie:</strong> Fahrrad</p>
-                <!-- Admin Controls hinzgefügt-->
-      <div class="wrap admin-controls hide"> 
-            <button type="button" class="add-btn">Hinzufügen</button>
-            <button type="button" class="delete-btn">Löschen</button>
-          </div>
-    </article>
-    <hr>
-    <article>
-      <h3>Ersatzverkehr in Marzahn</h3>
-      <p><strong>Beschreibung:</strong> Aufgrund notwendiger Brückenbauarbeiten auf den Linien (Tram M16 & M6) fährt Ersatzverkehr zwischen Landsberger Allee/Rhinstraße <-> S Marzahn.</p>
-      <p><strong>Adresse:</strong> S Marzahn, 12679 Berlin</p>
-      <p><strong>Kategorie:</strong> ÖPNV</p>
-                <!-- Admin Controls hinzgefügt-->
-      <div class="wrap admin-controls hide"> 
-            <button type="button" class="add-btn">Hinzufügen</button>
-            <button type="button" class="delete-btn">Löschen</button>
-          </div>
-    </article>
-  </div>
+    <div id="locationList">
+      <article>
+        <h3>Blockierter Radweg an der HTW</h3>
+        <p><strong>Beschreibung:</strong> Hier endet eine Fahrradwegmarkierung. Der weiterführende Radweg wird von parkenden PKWs blockiert.</p>
+        <p><strong>Adresse:</strong> Ostendstr. 35, 12459 Berlin</p>
+        <p><strong>Kategorie:</strong> Fahrrad</p>
+
+      </article>
+      <hr>
+      <article>
+        <h3>Radweg endet auf enger Straße (kein Mindestabstand)</h3>
+        <p><strong>Beschreibung:</strong> Hier endet ein Fahrradweg direkt nach einer Kreuzung. Passierende Autos und Fahrradfahrer kommen sich in die Quere, und der Mindestabstand zueinander kann nicht eingehalten werden.</p>
+        <p><strong>Adresse:</strong> Roelckestraße 69, 13086 Berlin</p>
+        <p><strong>Kategorie:</strong> Fahrrad</p>
+
+      </article>
+      <hr>
+      <article>
+        <h3>Ersatzverkehr in Marzahn</h3>
+        <p><strong>Beschreibung:</strong> Aufgrund notwendiger Brückenbauarbeiten auf den Linien (Tram M16 & M6) fährt Ersatzverkehr zwischen Landsberger Allee/Rhinstraße <-> S Marzahn.</p>
+        <p><strong>Adresse:</strong> S Marzahn, 12679 Berlin</p>
+        <p><strong>Kategorie:</strong> ÖPNV</p>
+        <!-- Admin Controls hinzgefügt-->
+        <div class="wrap admin-controls hide">
+          <button type="button" class="add-btn">Hinzufügen</button>
+          <button type="button" class="delete-btn">Löschen</button>
+        </div>
+      </article>
+    </div>
 
     <div class="wrap main-buttons">
       <button type="button" id="addLocationButton" class=hide>
         Standort hinzufügen
       </button>
-      <button type="button" id="logoutButton">
-        Ausloggen
-      </button>
+
     </div>
   </div>
 
@@ -293,17 +290,21 @@
   </div>
 </div>
 
-<!-- Footer -->
-<footer id="appFooter">
-      BeKy’s AEP – Awesome Environment Project:
-      Ein Projekt zur Verbesserung der Umweltwahrnehmung in der Stadt.
-      Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV: <br>
-      <br>
-      Benjamin Schulz & Ky Anh Pham
-      <br><br>
-      HTW-Berlin
-      Wilhelminenhofstr. 75A
-      <p><a href="#">Impressum</a> | <a href="#">Datenschutzerklärung</a></p>
-    </footer>
 </body>
+
+<footer>
+  <hr>
+  <br>
+  <b>Impressum & Datenschutzerklärung:</b>
+  <br><br>
+  BeKy's AEP - Awesome Environment Project:
+  <br>
+  Ein Projekt zur Verbesserung der Umweltwahrnehmung in der Stadt.
+  <br><br>
+  Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV: <br>
+  Benjamin Schulz, Ky Anh Pham
+  <br><br>
+  HTW-Berlin
+  Wilhelminenhofstr. 75A
+</footer>
 </html>
