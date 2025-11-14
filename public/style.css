@@ -1,4 +1,4 @@
-/*style.css*/
+/*test.css*/
 body {
   display: flex;
   align-items: center;
@@ -19,6 +19,7 @@ Lässt Dinge verschwinden
 }
 
 .main {
+  margin: auto;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -31,9 +32,11 @@ Lässt Dinge verschwinden
 footer {
   color: #555555;
   font-style: italic;
-  width: center;
+  font-size: small;
+  margin-top: auto;
   text-align: center;
-  padding: 15px 0;
+  width: 100%;
+  padding: 10px;
 }
 
 
@@ -102,4 +105,34 @@ button {
   justify-content: center;
   align-items: center;
   gap: 10px;
+}
+
+header {
+  font-size: medium;
+  margin-bottom: auto;
+  text-align: center;
+  color: white;
+  width: 100%;
+  background-color: #4CAF50;
+  box-shadow: 0px 5px 10px dimgray;
+}
+
+#welcomeMessage {
+  text-align: center;
+  font-size: large;
+}
+
+input.error {
+  border-color: red;
+  box-shadow: 0 0 4px rgba(255, 0, 0, 0.5);
+}
+
+#logoutButton {
+  background-color: lightgray;
+  scale: 80%;
+  padding: 10px;
+}
+
+#logoutButton:hover {
+  background-color: lightcoral;
 }
