@@ -61,48 +61,63 @@
   <!-- Die Main-Seite -->
   <div class="main hide" id="mainScreen">
     <h1>Standorte</h1>
-
-    <hr>
     <hr>
 
     <!-- TODO: Standorte formatieren, anklickbar machen => Detail-Screen öffen (admin-only-editable aber normalo kann halt sehen) -->
     <!-- Die Liste mit den Standorten -->
     <!---->
-    <div id="locationList">
-      <article>
-        <h3>Blockierter Radweg an der HTW</h3>
-        <p><strong>Beschreibung:</strong> Hier endet eine Fahrradwegmarkierung. Der weiterführende Radweg wird von parkenden PKWs blockiert.</p>
-        <p><strong>Adresse:</strong> Ostendstr. 35, 12459 Berlin</p>
-        <p><strong>Kategorie:</strong> Fahrrad</p>
+    <div id="location-list">
+      <article class="location-card" id="location-1">
 
-      </article>
-      <hr>
-      <article>
-        <h3>Radweg endet auf enger Straße (kein Mindestabstand)</h3>
-        <p><strong>Beschreibung:</strong> Hier endet ein Fahrradweg direkt nach einer Kreuzung. Passierende Autos und Fahrradfahrer kommen sich in die Quere, und der Mindestabstand zueinander kann nicht eingehalten werden.</p>
-        <p><strong>Adresse:</strong> Roelckestraße 69, 13086 Berlin</p>
-        <p><strong>Kategorie:</strong> Fahrrad</p>
+        <h3 class="location-title">Blockierter Radweg an der HTW</h3>
 
-      </article>
-      <hr>
-      <article>
-        <h3>Ersatzverkehr in Marzahn</h3>
-        <p><strong>Beschreibung:</strong> Aufgrund notwendiger Brückenbauarbeiten auf den Linien (Tram M16 & M6) fährt Ersatzverkehr zwischen Landsberger Allee/Rhinstraße <-> S Marzahn.</p>
-        <p><strong>Adresse:</strong> S Marzahn, 12679 Berlin</p>
-        <p><strong>Kategorie:</strong> ÖPNV</p>
-        <!-- Admin Controls hinzgefügt-->
-        <div class="wrap admin-controls hide">
-          <button type="button" class="add-btn">Hinzufügen</button>
-          <button type="button" class="delete-btn">Löschen</button>
+        <div class="location-meta">
+          <p><strong>Adresse:</strong> Ostendstr. 35, 12459 Berlin</p>
+          <p><strong>Kategorie:</strong> Fahrrad</p>
+
+          <div class="list-img">
+            <img src="standort2.png" alt="Vorschau des Bildes">
+          </div>
+
         </div>
+
       </article>
-    </div>
 
-    <div class="wrap main-buttons">
-      <button type="button" id="addLocationButton" class=hide>
-        Standort hinzufügen
-      </button>
+      <article class="location-card" id="location-2">
 
+        <h3 class="location-title">Radweg endet auf enger Straße (kein Mindestabstand)</h3>
+
+        <div class="location-meta">
+          <p><strong>Adresse:</strong> Roelckestraße 69, 13086 Berlin</p>
+          <p><strong>Kategorie:</strong> Fahrrad</p>
+
+          <div class="list-img">
+            <img src="standort2.png" alt="Vorschau des Bildes">
+          </div>
+
+        </div>
+
+      </article>
+
+      <article class="location-card" id="location-3">
+
+        <h3 class="location-title">Ersatzverkehr in Marzahn</h3>
+
+        <div class="location-meta">
+          <p><strong>Adresse:</strong> S Marzahn, 12679 Berlin</p>
+          <p><strong>Kategorie:</strong> ÖPNV</p>
+
+          <div class="list-img">
+            <img src="standort2.png" alt="Vorschau des Bildes">
+          </div>
+
+        </div>
+
+      </article>
+      <!-- Admin Controls hinzgefügt-->
+      <div class="wrap admin-controls hide">
+        <button type="button" class="admin-only" id="add-btn">Standort hinzufügen</button>
+      </div>
     </div>
   </div>
 
@@ -110,7 +125,7 @@
   <br>
 
   <!-- Der Add-Screen -->
-  <div class="main hide" id="addScreen">
+  <div class="main extension" id="addScreen">
     <h1>Standort hinzufügen</h1>
     <h3>HIER WERDEN NEUE STANDORTE HINZUGEFÜGT</h3>
 
@@ -198,7 +213,7 @@
   <br>
 
   <!-- Der Details-Screen -->
-  <div class="main hide" id="detailsScreen">
+  <div class="main extension" id="detail-view">
     <h1>DETAILS PAGE</h1>
     <h3>HIER WERDEN DATEN BEARBEITET</h3>
 
@@ -208,35 +223,31 @@
       <label for="titel">
         1. Titel: (*)
       </label>
-      <input type="text" id="titel" name="titel"
-             placeholder="Welch ein Originaler Titel" value="Radweg endet auf enger Straße (kein Mindestabstand)" required>
+      <input type="text" id="detail-title" name="titel" placeholder="Welch ein Originaler Titel" required>
 
       <!-- Standort -->
       <label for="standort">
         2. Beschreibung des Standorts:
       </label>
-      <input type="text" id="standort" name="standort"
-             placeholder="Beschreibe den Standort" value="Hier endet ein Fahrradweg direkt nach einer Kreuzung. Passierende Autos und Fahrradfahrer kommen sich in die Quere, und der Mindestabstand zueinander kann nicht eingehalten werden.">
+      <input type="text" id="detail-location" name="standort" placeholder="Beschreibe den Standort">
 
       <!-- Straße + Hausnummer -->
       <label for="street+number">
         3. Straße und Hausnummer: (*)
       </label>
-      <input type="text" id="street+number" name="street+number"
-             placeholder="Die Straße und Hausnummer" value="Roelckestraße 69" required>
+      <input type="text" id="detail-address" name="street+number" placeholder="Die Straße und Hausnummer" required>
 
 
       <!-- Straße + Hausnummer -->
       <label for="plzStadt">
         4. PLZ + Stadt: (*)
       </label>
-      <input type="text" id="plzStadt" name="plzStadt"
-             placeholder="Die Postleitzahl und die Stadt" value="13086 Berlin" required>
+      <input type="text" id="detail-plz" name="plzStadt" placeholder="Die Postleitzahl und die Stadt" required>
 
 
       <!-- Kategorie -->
       <label for="category-select">5. Kategorie: (*)</label>
-      <select id="category-select" name="kategorie" required>
+      <select id="detail-category" name="kategorie" required>
         <option value="">-- Bitte wählen Sie eine Kategorie --</option>
         <option value="Fahrrad">Fahrrad (Wege, Abschliessmöglichkeit)</option>
         <option value="ÖPNV">ÖPNV</option>
@@ -251,7 +262,7 @@
       <label for="standortBild">
         6. Bild des Standorts:
       </label>
-      <input type="file" id="standortBild" name="standortBild" accept="image/*">
+      <input type="file" id="detail-img" name="standortBild" accept="image/*">
 
       <div id="bildVorschau">
         <img id="previewImage" src="standort2.png" alt="Vorschau des Bildes" style="width:50%; height:50%">
@@ -263,7 +274,7 @@
           <label for="breitenGrad">
             Breitengrad:
           </label>
-          <input type="text" id="breitenGrad" name="breitenGrad"
+          <input type="text" id="detail-lat" name="breitenGrad"
                  readonly>
         </div>
 
@@ -271,7 +282,7 @@
           <label for="laengenGrad">
             Längengrad:
           </label>
-          <input type="text" id="laengenGrad" name="laengenGrad"
+          <input type="text" id="detail-lon" name="laengenGrad"
                  readonly>
         </div>
       </div>
