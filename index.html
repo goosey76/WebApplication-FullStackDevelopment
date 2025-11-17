@@ -54,7 +54,7 @@
   <p id="welcomeMessage" class="hide"></p>
 
   <!-- Logout-Button -->
-  <button type="button" class="hide" id="logoutButton">
+  <button type="button" class="hide extra-btn" id="logoutButton">
     Ausloggen
   </button>
 
@@ -63,7 +63,6 @@
     <h1>Standorte</h1>
     <hr>
 
-    <!-- TODO: Standorte formatieren, anklickbar machen => Detail-Screen öffen (admin-only-editable aber normalo kann halt sehen) -->
     <!-- Die Liste mit den Standorten -->
     <!---->
     <div id="location-list">
@@ -76,7 +75,7 @@
           <p><strong>Kategorie:</strong> Fahrrad</p>
 
           <div class="list-img">
-            <img src="standort2.png" alt="Vorschau des Bildes">
+            <img src="img/ostend.png" alt="Kein Bild vorhanden.">
           </div>
 
         </div>
@@ -85,14 +84,14 @@
 
       <article class="location-card" id="location-2">
 
-        <h3 class="location-title">Radweg endet auf enger Straße (kein Mindestabstand)</h3>
+        <h3 class="location-title">Radweg endet auf enger Straße</h3>
 
         <div class="location-meta">
           <p><strong>Adresse:</strong> Roelckestraße 69, 13086 Berlin</p>
           <p><strong>Kategorie:</strong> Fahrrad</p>
 
           <div class="list-img">
-            <img src="standort2.png" alt="Vorschau des Bildes">
+            <img src="img/roelcke.png" alt="Kein Bild vorhanden.">
           </div>
 
         </div>
@@ -108,7 +107,7 @@
           <p><strong>Kategorie:</strong> ÖPNV</p>
 
           <div class="list-img">
-            <img src="standort2.png" alt="Vorschau des Bildes">
+            <img src="placeholder.png" alt="Kein Bild vorhanden.">
           </div>
 
         </div>
@@ -203,7 +202,7 @@
         <button type="submit">
           Speichern
         </button>
-        <button type="submit">
+        <button class="cancel" type="button" id="cancel-add-btn">
           Abbrechen
         </button>
       </div>
@@ -214,6 +213,7 @@
 
   <!-- Der Details-Screen -->
   <div class="main extension" id="detail-view">
+
     <h1>DETAILS PAGE</h1>
     <h3>HIER WERDEN DATEN BEARBEITET</h3>
 
@@ -229,7 +229,7 @@
       <label for="standort">
         2. Beschreibung des Standorts:
       </label>
-      <input type="text" id="detail-location" name="standort" placeholder="Beschreibe den Standort">
+      <input type="text" id="detail-description" name="standort" placeholder="Beschreibe den Standort">
 
       <!-- Straße + Hausnummer -->
       <label for="street+number">
@@ -262,10 +262,10 @@
       <label for="standortBild">
         6. Bild des Standorts:
       </label>
-      <input type="file" id="detail-img" name="standortBild" accept="image/*">
+      <input class="admin-only" type="file" id="detail-img" name="standortBild" accept="image/*">
 
       <div id="bildVorschau">
-        <img id="previewImage" src="standort2.png" alt="Vorschau des Bildes" style="width:50%; height:50%">
+        <img id="previewImage" src="" alt="Kein Bild vorhanden." style="width:50%; height:50%">
       </div>
 
       <!-- Geokoordinaten -->
@@ -287,13 +287,13 @@
         </div>
       </div>
       <div class="wrap">
-        <button type="submit">
+        <button class="admin-only" submit">
           Speichern
         </button>
-        <button type="submit">
+        <button class="admin-only" type="button" id="deleteButton">
           Löschen
         </button>
-        <button type="submit">
+        <button class="cancel" type="button" id="cancelButton">
           Abbrechen
         </button>
       </div>
