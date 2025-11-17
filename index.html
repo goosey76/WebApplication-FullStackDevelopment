@@ -16,7 +16,7 @@
 <div class="parent">
 
   <!-- Die Login-Seite (nach erfolgreichem Login verstecken)-->
-  <div class="main login">
+  <div class="main login" id="loginScreen">
 
     <h1>BeKy's AEP</h1>
     <h3>LOGIN</h3>
@@ -54,9 +54,10 @@
   <p id="welcomeMessage" class="hide"></p>
 
   <!-- Logout-Button -->
-  <button type="button" class="hide extra-btn" id="logoutButton">
+  <button type="button" class="hide" id="logoutButton">
     Ausloggen
   </button>
+
 
   <!-- Die Main-Seite -->
   <div class="main hide" id="mainScreen">
@@ -113,8 +114,9 @@
         </div>
 
       </article>
+
       <!-- Admin Controls hinzgefügt-->
-      <div class="wrap admin-controls hide">
+      <div class="wrap admin-controls">
         <button type="button" class="admin-only" id="add-btn">Standort hinzufügen</button>
       </div>
     </div>
@@ -124,7 +126,7 @@
   <br>
 
   <!-- Der Add-Screen -->
-  <div class="main extension" id="addScreen">
+  <div class="main extension hide"  id="addScreen">
     <h1>Standort hinzufügen</h1>
     <h3>HIER WERDEN NEUE STANDORTE HINZUGEFÜGT</h3>
 
@@ -212,13 +214,14 @@
   <br>
 
   <!-- Der Details-Screen -->
-  <div class="main extension" id="detail-view">
+  <div class="main extension hide" id="detailScreen">
 
     <h1>DETAILS PAGE</h1>
     <h3>HIER WERDEN DATEN BEARBEITET</h3>
 
-    <!-- Login Form Code -->
-    <form action="">
+    <form id="detailsForm">
+      <!-- Login Form Code -->
+    
       <!-- Titel -->
       <label for="titel">
         1. Titel: (*)
@@ -274,30 +277,26 @@
           <label for="breitenGrad">
             Breitengrad:
           </label>
-          <input type="text" id="detail-lat" name="breitenGrad"
-                 readonly>
+          <input type="text" id="detail-lat" name="breitenGrad"readonly>
         </div>
 
         <div>
           <label for="laengenGrad">
             Längengrad:
           </label>
-          <input type="text" id="detail-lon" name="laengenGrad"
-                 readonly>
+          <input type="text" id="detail-lon" name="laengenGrad" readonly>
         </div>
       </div>
+
+    <!-- Buttons -->
+  
       <div class="wrap">
-        <button class="admin-only" submit">
-          Speichern
-        </button>
-        <button class="admin-only" type="button" id="deleteButton">
-          Löschen
-        </button>
-        <button class="cancel" type="button" id="cancelButton">
-          Abbrechen
-        </button>
+        <button class="admin-only" type="submit" id="updateButton">Speichern </button>
+        <button class="admin-only" type="button" id="deleteButton">Löschen</button>
+        <button class="cancel" type="button" id="cancelButton">Abbrechen</button>
       </div>
     </form>
+  
   </div>
 </div>
 

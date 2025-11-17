@@ -145,6 +145,14 @@ input.error {
   background-color: lightcoral;
 }
 
+#cancel-add-button:hover {
+  background-color: lightcoral;
+}
+
+#cancelButton:hover {
+  background-color: lightcoral;
+}
+
 .admin-only {
   display: none;
 }
