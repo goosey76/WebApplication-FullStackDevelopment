@@ -135,7 +135,7 @@ input.error {
   box-shadow: 0 0 4px rgba(255, 0, 0, 0.5);
 }
 
-#logoutButton {
+.extra-btn {
   background-color: lightgray;
   scale: 80%;
   padding: 10px;
