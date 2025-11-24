@@ -28,10 +28,10 @@ const LOCATION = [
  * @param {*} role  Die Rolle des Users
  */
 function handleAdminVisibility(role) {
-  // suche alle admin Elemente - > Hier Speichern-Löschen Button
-  const adminElements = document.querySelectorAll('.admin-only');
-
-// admin-only Klasse wird hier sichtbar gemacht
+// suche alle admin Elemente - > Hier Speichern-Löschen Button
+const adminElements = document.querySelectorAll('.admin-only');
+  
+  // admin-only Klasse wird hier sichtbar gemacht
   if (role === 'admin') {
     adminElements.forEach((element) => {
       element.style.display = 'block';
@@ -111,6 +111,7 @@ function handleUpdate(event) {
   currentEditLocationId = null;
   
   // Todo: Locations müssten auf Main aktuallisiert werden bei erweiterten Location Arrays erweiterte Card List
+  renderLocations();
   showScreen('mainScreen');
 }
 
@@ -141,6 +142,8 @@ function handleLogin(e) {
 
     // MainScreen beim Login
     showScreen("mainScreen");
+    renderLocations();
+    console.log('Rendering Location');
 
     // Wilkommen und Logout Button sichtbar machen (sind keine Screens)
     const welcomeMessage = document.getElementById("welcomeMessage");
@@ -152,7 +155,6 @@ function handleLogin(e) {
     const logoutButton = document.getElementById("logoutButton");
     if(logoutButton) {
       logoutButton.classList.remove("hide"); 
-
     }
 
     // Admin Buttons
@@ -196,12 +198,14 @@ function handleLogout() {
  * @returns den addScreen oder FehlerMeldung wenn die Rolle nicht stimmt.
  */
 function handleAddLocationClick() {
+  
   // Admin Rechte überprüfen zum Speichern
   if (!currentUser || currentUser.role !== 'admin') {
       alert("Sie haben keine Berechtigung, Standorte zu speichern oder zu aktualisieren.");
       return;
   }
 
+  renderLocations();
   showScreen('addScreen');
 }
 
@@ -209,6 +213,89 @@ function handleAddLocationClick() {
  * Geht wieder zum Mainscreen
  */
 function handleCancel() {
+  showScreen('mainScreen');
+}
+
+/**
+ * Rendert die Location in die HTML Cards
+ * und hält das Array an Standorten aktuell
+ */
+function renderLocations() {
+  const locationList = document.getElementById('location-list');
+  locationList.innerHTML = ''; // cleaned
+
+  LOCATION.forEach(location => {
+    const card = document.createElement('article');
+    card.className = 'location-card';
+    card.id = `location-${location.id}`;
+
+    card.innerHTML = `
+      <h3 class="location-title">${location.title}</h3>
+      <div class="location-meta">
+        <p><strong>Adresse:</strong> ${location.address}, ${location.plzCity}</p>
+        <p><strong>Kategorie:</strong> ${location.category}</p>
+        <div class="list-img">
+          <img src="${location.image}" alt="Kein Bild vorhanden.">
+        </div>
+      </div>
+    `;
+
+    // Add click event for details
+    card.addEventListener('click', () => {
+      currentEditLocationId = location.id;
+      showScreen('detailScreen');
+      // Fill details (reuse existing logic)
+      document.getElementById('detail-title').value = location.title;
+      document.getElementById('detail-description').value = location.description;
+      document.getElementById('detail-address').value = location.address;
+      document.getElementById('detail-plz').value = location.plzCity;
+      document.getElementById('detail-category').value = location.category;
+      document.getElementById('previewImage').src = location.image;
+      // Handle admin/non-admin view (reuse existing logic)
+      const detailInputs = document.querySelectorAll('#detailScreen input, #detailScreen select');
+      if (currentUser && currentUser.role === 'admin') {
+        detailInputs.forEach(input => {
+          input.disabled = false;
+          input.readOnly = false;
+        });
+      } else {
+        detailInputs.forEach(input => {
+          input.disabled = true;
+          input.readOnly = true;
+        });
+      }
+    });
+
+    locationList.appendChild(card);
+  });
+}
+
+/**
+ * fügt den neuen Standort in die Liste hinzu und aktuallisiert die MainPage
+ * @param {*} event Beim zufuegen des Standortes
+ * @returns die neue Liste
+ */
+function handleAddLocation(event) {
+  event.preventDefault();
+  if(!currentUser || currentUser.role != 'admin') {
+    alert('Keine Berechtigung');
+    return;
+  }
+
+  // Neuer Standort +1 in der Liste
+  const newLocation = {
+    id: Math.max(...LOCATION.map(l => l.id), 0) + 1,
+    title: document.getElementById('titel').value,
+    description: document.getElementById('standort').value,
+    adress: document.getElementById('street+number').value,
+    plzCity: document.getElementById('plzStadt').value,
+    category: document.getElementById('category-select').value,
+    image: 'placeholder.png'
+  };
+  LOCATION.push(newLocation);
+  renderLocations();
+
+  event.target.reset();
   showScreen('mainScreen');
 }
 
@@ -221,16 +308,15 @@ function handleCancel() {
    *              darf diese weder bearbeiten noch
    *              löschen. ‚normalo‘ darf keine Standorte anlegen
    */
-
   document.addEventListener("DOMContentLoaded", () => {
 
-  // Login Form und Handling - funzt
+  // Login Form und Handling.   
   const loginForm = document.querySelector("#loginScreen form");
   if(loginForm) {
     loginForm.addEventListener("submit", handleLogin);
   }
 
-  // logout and reset - funzt
+  // logout and reset 
   const logoutButton = document.querySelector("#logoutButton");
   if (logoutButton) { 
     logoutButton.addEventListener("click", handleLogout)
@@ -248,6 +334,11 @@ function handleCancel() {
     addButton.addEventListener("click", handleAddLocationClick);
   }
 
+  const addForm = document.querySelector('#addScreen form');
+  if(addForm) {
+    addForm.addEventListener('submit', handleAddLocation);
+  }
+
   // Cancel Button vom Add-Button
   const cancelAddButton = document.getElementById("cancel-add-btn");
   if (cancelAddButton) {
@@ -260,8 +351,26 @@ function handleCancel() {
       cancelButton.addEventListener("click", handleCancel);
   }
 
+  // delete Button
+  const deleteButton = document.getElementById('deleteButton');
+  deleteButton.addEventListener('click', (e) => {
+    // Admin Rechte überprüfen zum Speichern
+  if (!currentUser || currentUser.role !== 'admin') {
+      alert("Sie haben keine Berechtigung, Standorte zu speichern oder zu aktualisieren.");
+      return;
+  }
 
+  // entferne vom Array
+  const index = LOCATION.findIndex(loc => loc.id === currentEditLocationId);
+  if (index !== -1) {
+    LOCATION.splice(index, 1);
+  }
 
+  // Renderr
+  renderLocations();
+  showScreen('mainScreen');
+  currentEditLocationId == null;
+  })
 
   //Details
   const locationCards = document.querySelectorAll(".location-card");
@@ -279,7 +388,7 @@ function handleCancel() {
 
         //switch to admin or non-admin view
         const detailInputs = document.querySelectorAll(
-          "#detail-view input, #detail-view select"
+          "#detailScreen input, #detailScreen select"
         );
 
         if (currentUser.role === "admin") {
@@ -294,7 +403,6 @@ function handleCancel() {
               input.disabled = true;
               input.readOnly = true;
           });
-
         }
 
         const titleEl = card.querySelector(".location-title");
@@ -311,7 +419,7 @@ function handleCancel() {
         document.getElementById("detail-plz").value = foundLocation.plzCity;
         document.getElementById("detail-category").value = foundLocation.category;
 
-        //fill image
+          //fill image
         document.getElementById("previewImage").src = foundLocation.image;
 
         // Gehe wieder zum Main Screen
