@@ -68,6 +68,7 @@ function showScreen(screenIdToShow) {
   });
 }
 
+
 /**
  * called die API für Geokoordinaten (Nominatim)
  * @param {string} addressString die vollständige Adresse
@@ -116,6 +117,7 @@ async function fetchCoordinates(addressString) {
     }
 }
 
+
 /**
  * Updated die Felder von den Standort
  * @param {*} event Bei änderung des Standortes und seine Felder
@@ -155,19 +157,34 @@ async function handleUpdate(event) {
         console.warn('Keine Koordinaten gefunden, lasse lat/lon unverändert.');
     }
 
-    const updatedData = { title, description, address, plzCity, category, lat, lon };
+  let image = LOCATION.find(loc => loc.id === currentEditLocationId)?.image || 'placeholder.png';
 
-    const index = LOCATION.findIndex(loc => loc.id === currentEditLocationId);
-    if (index !== -1) {
-        LOCATION[index] = { ...LOCATION[index], ...updatedData };
-        alert(`Standort ${title} erfolgreich gespeichert!`);
-    }
+  const fileInput = document.getElementById('detail-img');
+  if (fileInput.files[0]) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          image = e.target.result; // Data-URL
+      };
+      reader.readAsDataURL(file);
+      // Warte auf das Laden (da async, könnte ein Promise verwendet werden, aber für Einfachheit: annehmen, dass es schnell ist)
+      await new Promise(resolve => reader.onload = () => { image = reader.result; resolve(); });
+  }
 
-    currentEditLocationId = null;
+  const updatedData = { title, description, address, plzCity, category, lat, lon, image };
 
-    renderLocations();
-    showScreen('mainScreen');
+  const index = LOCATION.findIndex(loc => loc.id === currentEditLocationId);
+  if (index !== -1) {
+      LOCATION[index] = { ...LOCATION[index], ...updatedData };
+      alert(`Standort ${title} erfolgreich gespeichert!`);
+  }
+
+  currentEditLocationId = null;
+
+  renderLocations();
+  showScreen('mainScreen');
 }
+
 
 /**
  * LogIn Handling von Admin und Normalo
@@ -216,6 +233,7 @@ function handleLogin(e) {
     console.log("User not found: Invalid username or password.");
   }
 }
+
 
 /**
  * Logout Button und Reset von der Form -> zum LoginScreen
@@ -372,22 +390,37 @@ async function handleAddLocation(event) {
         console.warn('Keine Koordinaten gefunden, speichere ohne lat/lon.');
     }
 
-    const newLocation = {
-        id: Math.max(...LOCATION.map(l => l.id), 0) + 1,
-        title,
-        description,
-        address: street,
-        plzCity,
-        category,
-        image: 'placeholder.png',
-        lat,
-        lon
-    };
+  let image = 'placeholder.png'; // Fallback
 
-    LOCATION.push(newLocation);
+  const fileInput = document.getElementById('standortBild');
+  if (fileInput.files[0]) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          image = e.target.result; // Data-URL
+      };
+      reader.readAsDataURL(file);
+      // Warte auf das Laden (da async, könnte ein Promise verwendet werden, aber für Einfachheit: annehmen, dass es schnell ist)
+      await new Promise(resolve => reader.onload = () => { image = reader.result; resolve(); });
+  }
 
-    event.target.reset();
-    showScreen('mainScreen');
+  const newLocation = {
+      id: Math.max(...LOCATION.map(l => l.id), 0) + 1,
+      title,
+      description,
+      address: street,
+      plzCity,
+      category,
+      image,
+      lat,
+      lon
+  };
+
+  LOCATION.push(newLocation);
+  renderLocations();
+
+  event.target.reset();
+  showScreen('mainScreen');
 }
 
 
