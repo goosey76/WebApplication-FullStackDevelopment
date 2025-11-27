@@ -15,10 +15,10 @@ let currentEditLocationId = null;
 const LOCATION = [
 { id: 1, title:"Blockierter Radweg an der HTW", description:"Hier ist ein Radweg blockiert.", address:"Ostendstr. 35", plzCity:"12459, Berlin", category: "Fahrrad", image:"img/ostend.png"},
 { id: 2, title:"Radweg endet auf enger Straße", description:"Hier endet ein Radweg im nirgendwo.", address:"Roelckestr. 69", plzCity:"13086, Berlin", category: "Fahrrad", image:"img/roelcke.png"},
-{ id: 3, title:"Ersatzverkehr in Marzahn", description:"Hier ist Ersatzverkehr mit Bussen.", address:"S Marzhan", plzCity:"12679, Berlin", category: "ÖPNV", image:"placeholder.png"},];
+{ id: 3, title:"Ersatzverkehr in Marzahn", description:"Hier ist Ersatzverkehr mit Bussen.", address:"S Marzahn", plzCity:"12679, Berlin", category: "ÖPNV", image:"placeholder.png"},];
 
 
-//===================
+//==================
 //=== Funktionen ===
 //==================
 
@@ -68,51 +68,105 @@ function showScreen(screenIdToShow) {
   });
 }
 
+/**
+ * called die API für Geokoordinaten (Nominatim)
+ * @param {string} addressString die vollständige Adresse
+ * @returns {Promise<{lat: string, lon: string} | null>}
+ */
+async function fetchCoordinates(addressString) {
+    const baseUrl = 'https://nominatim.openstreetmap.org/search';
+
+    const params = new URLSearchParams({
+        q: addressString,
+        format: 'json',
+        limit: '1',
+        addressdetails: '0'
+    });
+
+    const url = `${baseUrl}?${params.toString()}`;
+    console.log('Nominatim-Request:', url);
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.error('Nominatim HTTP-Fehler:', response.status);
+            return null;
+        }
+
+        const data = await response.json();
+
+        if (!data || data.length === 0) {
+            console.warn('Keine Ergebnisse für Adresse:', addressString);
+            return null;
+        }
+
+        const first = data[0];
+        return {
+            lat: first.lat,
+            lon: first.lon
+        };
+    } catch (err) {
+        console.error('Fehler beim Abruf der Koordinaten:', err);
+        return null;
+    }
+}
 
 /**
  * Updated die Felder von den Standort
  * @param {*} event Bei änderung des Standortes und seine Felder
  * @returns Der Bearbeitete Standort
  */
-function handleUpdate(event) {
-  event.preventDefault(); // verhindert Seiten Logout
+async function handleUpdate(event) {
+    event.preventDefault();
 
-  // Admin Rechte überprüfen auf Updates
-  if (!currentUser || currentUser.role !== 'admin') {
-      alert("Sie haben keine Berechtigung, Standorte zu speichern oder zu aktualisieren.");
-      return;
-  }
+    if (!currentUser || currentUser.role !== 'admin') {
+        alert("Sie haben keine Berechtigung, Standorte zu speichern oder zu aktualisieren.");
+        return;
+    }
 
-  if(!currentEditLocationId) {
-    alert("Es wurde kein Standort zum Speichern ausgewählt.");
-    return;
-  }
+    if (!currentEditLocationId) {
+        alert("Es wurde kein Standort zum Speichern ausgewählt.");
+        return;
+    }
 
-  // 1. Daten aus den Detailfeldern holen
-  const updatedData = {
-      title: document.getElementById('detail-title').value,
-      description: document.getElementById('detail-description').value,
-      address: document.getElementById('detail-address').value,
-      plzCity: document.getElementById('detail-plz').value,
-      category: document.getElementById('detail-category').value,
-      lat: document.getElementById('detail-lat').value,
-      lon: document.getElementById('detail-lon').value,
-      
-  };
+    const title = document.getElementById('detail-title').value;
+    const description = document.getElementById('detail-description').value;
+    const address = document.getElementById('detail-address').value;
+    const plzCity = document.getElementById('detail-plz').value;
+    const category = document.getElementById('detail-category').value;
 
-  // 2. Im Array aktualisieren
-  const index = LOCATION.findIndex(loc => loc.id === currentEditLocationId);
-  if (index !== -1) {
-      LOCATION[index] = { ...LOCATION[index], ...updatedData };
-      alert(`Standort ${updatedData.title} erfolgreich gespeichert!`);
-  }
+    let lat = document.getElementById('detail-lat').value;
+    let lon = document.getElementById('detail-lon').value;
 
-  // 3. Zurück zur Hauptansicht
-  currentEditLocationId = null;
-  
-  // Todo: Locations müssten auf Main aktuallisiert werden bei erweiterten Location Arrays erweiterte Card List
-  renderLocations();
-  showScreen('mainScreen');
+    const fullAddress = `${address}, ${plzCity}`;
+
+    const coords = await fetchCoordinates(fullAddress);
+    if (coords) {
+        lat = coords.lat;
+        lon = coords.lon;
+        document.getElementById('detail-lat').value = lat;
+        document.getElementById('detail-lon').value = lon;
+    } else {
+        console.warn('Keine Koordinaten gefunden, lasse lat/lon unverändert.');
+    }
+
+    const updatedData = { title, description, address, plzCity, category, lat, lon };
+
+    const index = LOCATION.findIndex(loc => loc.id === currentEditLocationId);
+    if (index !== -1) {
+        LOCATION[index] = { ...LOCATION[index], ...updatedData };
+        alert(`Standort ${title} erfolgreich gespeichert!`);
+    }
+
+    currentEditLocationId = null;
+
+    renderLocations();
+    showScreen('mainScreen');
 }
 
 /**
@@ -131,7 +185,6 @@ function handleLogin(e) {
   const username = usernameInput.value.trim();
   const password = passwordInput.value;
 
-  // Findet denn Nuzer
   const foundUser = USER.find(
     (u) => u.username === username && u.password === password
   );
@@ -140,12 +193,10 @@ function handleLogin(e) {
     currentUser = foundUser;
     console.log("Login erfolgreich als:", foundUser.name, "Role:", foundUser.role);
 
-    // MainScreen beim Login
     showScreen("mainScreen");
     renderLocations();
     console.log('Rendering Location');
 
-    // Wilkommen und Logout Button sichtbar machen (sind keine Screens)
     const welcomeMessage = document.getElementById("welcomeMessage");
     if(welcomeMessage) {
       welcomeMessage.textContent = `Herzlich Willkomen, ${foundUser.name}.`;
@@ -157,7 +208,6 @@ function handleLogin(e) {
       logoutButton.classList.remove("hide"); 
     }
 
-    // Admin Buttons
     handleAdminVisibility(foundUser.role);
 
   } else {
@@ -221,15 +271,15 @@ function handleCancel() {
  * und hält das Array an Standorten aktuell
  */
 function renderLocations() {
-  const locationList = document.getElementById('location-list');
-  locationList.innerHTML = ''; // cleaned
+    const locationList = document.getElementById('location-list');
+    locationList.innerHTML = '';
 
-  LOCATION.forEach(location => {
-    const card = document.createElement('article');
-    card.className = 'location-card';
-    card.id = `location-${location.id}`;
+    LOCATION.forEach(location => {
+        const card = document.createElement('article');
+        card.className = 'location-card';
+        card.id = `location-${location.id}`;
 
-    card.innerHTML = `
+        card.innerHTML = `
       <h3 class="location-title">${location.title}</h3>
       <div class="location-meta">
         <p><strong>Adresse:</strong> ${location.address}, ${location.plzCity}</p>
@@ -240,64 +290,106 @@ function renderLocations() {
       </div>
     `;
 
-    // Add click event for details
-    card.addEventListener('click', () => {
-      currentEditLocationId = location.id;
-      showScreen('detailScreen');
-      // Fill details (reuse existing logic)
-      document.getElementById('detail-title').value = location.title;
-      document.getElementById('detail-description').value = location.description;
-      document.getElementById('detail-address').value = location.address;
-      document.getElementById('detail-plz').value = location.plzCity;
-      document.getElementById('detail-category').value = location.category;
-      document.getElementById('previewImage').src = location.image;
-      // Handle admin/non-admin view (reuse existing logic)
-      const detailInputs = document.querySelectorAll('#detailScreen input, #detailScreen select');
-      if (currentUser && currentUser.role === 'admin') {
-        detailInputs.forEach(input => {
-          input.disabled = false;
-          input.readOnly = false;
-        });
-      } else {
-        detailInputs.forEach(input => {
-          input.disabled = true;
-          input.readOnly = true;
-        });
-      }
-    });
+        // Add click event for details
+        card.addEventListener('click', () => {
+            currentEditLocationId = location.id;
+            showScreen('detailScreen');
 
-    locationList.appendChild(card);
-  });
+            document.getElementById('detail-title').value = location.title;
+            document.getElementById('detail-description').value = location.description;
+            document.getElementById('detail-address').value = location.address;
+            document.getElementById('detail-plz').value = location.plzCity;
+            document.getElementById('detail-category').value = location.category;
+            document.getElementById('previewImage').src = location.image;
+
+            document.getElementById('detail-lat').value = location.lat || '';
+            document.getElementById('detail-lon').value = location.lon || '';
+
+            // Admin / Non-Admin
+            const detailInputs = document.querySelectorAll('#detailScreen input, #detailScreen select');
+
+            const latField = document.getElementById('detail-lat');
+            const lonField = document.getElementById('detail-lon');
+
+            if (currentUser && currentUser.role === 'admin') {
+                detailInputs.forEach(input => {
+                    input.disabled = false;
+                    input.readOnly = false;
+                });
+            } else {
+                detailInputs.forEach(input => {
+                    input.disabled = true;
+                    input.readOnly = true;
+                });
+            }
+            latField.disabled = true;
+            latField.readOnly = true;
+            lonField.disabled = true;
+            lonField.readOnly = true;
+
+        });
+
+        locationList.appendChild(card);
+    });
 }
+
 
 /**
  * fügt den neuen Standort in die Liste hinzu und aktuallisiert die MainPage
  * @param {*} event Beim zufuegen des Standortes
  * @returns die neue Liste
  */
-function handleAddLocation(event) {
-  event.preventDefault();
-  if(!currentUser || currentUser.role != 'admin') {
-    alert('Keine Berechtigung');
-    return;
-  }
+async function handleAddLocation(event) {
+    event.preventDefault();
 
-  // Neuer Standort +1 in der Liste
-  const newLocation = {
-    id: Math.max(...LOCATION.map(l => l.id), 0) + 1,
-    title: document.getElementById('titel').value,
-    description: document.getElementById('standort').value,
-    adress: document.getElementById('street+number').value,
-    plzCity: document.getElementById('plzStadt').value,
-    category: document.getElementById('category-select').value,
-    image: 'placeholder.png'
-  };
-  LOCATION.push(newLocation);
-  renderLocations();
+    if (!currentUser || currentUser.role !== 'admin') {
+        alert('Keine Berechtigung');
+        return;
+    }
 
-  event.target.reset();
-  showScreen('mainScreen');
+    const title = document.getElementById('titel').value;
+    const description = document.getElementById('standort').value;
+    const street = document.getElementById('street+number').value;
+    const plzCity = document.getElementById('plzStadt').value;
+    const category = document.getElementById('category-select').value;
+
+    const fullAddress = `${street}, ${plzCity}`;
+
+    const coords = await fetchCoordinates(fullAddress);
+
+    let lat = '';
+    let lon = '';
+
+    if (coords) {
+        lat = coords.lat;
+        lon = coords.lon;
+
+        const latInput = document.getElementById('breitenGrad');
+        const lonInput = document.getElementById('laengenGrad');
+        if (latInput) latInput.value = lat;
+        if (lonInput) lonInput.value = lon;
+    } else {
+        console.warn('Keine Koordinaten gefunden, speichere ohne lat/lon.');
+    }
+
+    const newLocation = {
+        id: Math.max(...LOCATION.map(l => l.id), 0) + 1,
+        title,
+        description,
+        address: street,
+        plzCity,
+        category,
+        image: 'placeholder.png',
+        lat,
+        lon
+    };
+
+    LOCATION.push(newLocation);
+
+    event.target.reset();
+    showScreen('mainScreen');
 }
+
 
 
   /**
@@ -372,85 +464,5 @@ function handleAddLocation(event) {
   currentEditLocationId == null;
   })
 
-  //Details
-  const locationCards = document.querySelectorAll(".location-card");
-    let activeCard = null;
-    locationCards.forEach((card) => {
-      card.addEventListener("click", (e) => {
-        const locationCardId = card.getAttribute("id");
-        console.log("Opened detail-view of location: " + locationCardId);
-
-        activeCard = card;
-
-        currentEditLocationId = parseInt(locationCardId.replace('location-', ''));
-        //hide everything else
-        showScreen('detailScreen');
-
-        //switch to admin or non-admin view
-        const detailInputs = document.querySelectorAll(
-          "#detailScreen input, #detailScreen select"
-        );
-
-        if (currentUser.role === "admin") {
-
-          detailInputs.forEach((input) => {
-            input.disabled = false;
-            input.readOnly = false;
-          });
-
-        } else {
-          detailInputs.forEach((input) => {
-              input.disabled = true;
-              input.readOnly = true;
-          });
-        }
-
-        const titleEl = card.querySelector(".location-title");
-        const title = titleEl ? titleEl.textContent.trim() : "";
-
-        const foundLocation = LOCATION.find(
-          (l) => l.title === title
-        );
-
-        //fill fields
-        document.getElementById("detail-title").value = foundLocation.title;
-        document.getElementById("detail-description").value = foundLocation.description;
-        document.getElementById("detail-address").value = foundLocation.address;
-        document.getElementById("detail-plz").value = foundLocation.plzCity;
-        document.getElementById("detail-category").value = foundLocation.category;
-
-          //fill image
-        document.getElementById("previewImage").src = foundLocation.image;
-
-        // Gehe wieder zum Main Screen
-        const cancelButton = document.getElementById("cancelButton");
-        cancelButton.addEventListener("click", (e) => {
-          showScreen('mainScreen');
-        })
-
-        //delete
-
-        const deleteButton = document.getElementById("deleteButton");
-        deleteButton.addEventListener("click", (e) => {
-            //TODO: DELETE-LOGIC
-          if (!activeCard) return;
-
-          console.log("Deleting:", activeCard.id);
-
-          activeCard.remove();
-
-          document.getElementById("detailScreen").style.display = "none";
-
-          document.querySelectorAll(".hide").forEach((el) => {
-            el.style.display = "block";
-          });
-
-          activeCard = null;
-
-        })
-
-      })
-
-    })
   });
 
