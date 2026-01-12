@@ -3,8 +3,8 @@ import { createServer } from 'http';
 import express, { json, static as expressStatic} from 'express';
 import { join } from 'path';
 import indexRouter from './routes/index.js';
-import usersRouter from './routes/users.js';
-import locationsRouter from './routes/locs.js';
+import usersRouter from './routes/login.js';
+import locationsRouter from './routes/loc.js';
 import.meta.dirname;
 
 let app = express();
@@ -25,12 +25,12 @@ app.use(json());
 app.use(expressStatic(join(import.meta.dirname, '../public')));
 app.use('/', indexRouter);
 
-// 2) http://localhost:8000/users
-app.use('/users', usersRouter);
+// 2) http://localhost:8000/login
+app.use('/login', usersRouter);
 
 // Benutzte Locs 
 // http://localhost:8000/locs
-app.use('/locs', locationsRouter);
+app.use('/loc', locationsRouter);
 
 // 3) Send "Not found" for all other 'paths'
 app.use(function(req, res) {

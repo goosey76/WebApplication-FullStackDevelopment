@@ -13,11 +13,11 @@ usersRouter.get('/', async function(req, res) {
       res.status(200).json(users);
     }
     else {
-      res.status(404).send(`Users not found!`);
+      res.status(401).send(`Users not found!`);
     }
   } catch (err) {
     console.log(err);
-    res.status(400).send("Something is not right!!");
+    res.status(500).send("Internet Fehler");
   }
 });
 
@@ -28,16 +28,20 @@ usersRouter.get('/', async function(req, res) {
 // erwartet eine payload diesen ^^^ Formats 
 // der Header Content-Type: application/json MUSS mitgeschickt
 // 
-usersRouter.post('/', async function(req, res) {
-  // wird automatisch in ein JS-Objekt umgewandelt, 
-  // wenn Content-Type: application/json gesetzt ist
-  let userToLogin = req.body;  
-  console.log (userToLogin);
-  let user = await findOneUser(userToLogin.username, userToLogin.password);
-  if (user) {
-    res.status(200).json(user);
-  } else {
-    res.status(401).send("Bad Login Credentials");
+usersRouter.post('/login', async function(req, res) {
+  const { username, password } = req.body;  
+
+  try {
+    const user = await findOneUser(username, password);
+    
+    if (user) {
+      res.status(200).json(user); // Gibt den User zurück
+    } else {
+      res.status(401).send("Ungültige Anmeldeinformationen");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Interner Server Fehler.")
   }
 });
 

@@ -4,7 +4,7 @@ import { deleteOneLocation, findAllLocations, findOneLocation } from '../db/mong
 let locationsRouter = Router();
 
 // Finde alle Locations
-locationsRouter.get('/locs', async function (req, res) {
+locationsRouter.get('/loc', async function (req, res) {
     try {
         let locations = await findAllLocations();
         if (locations) {
@@ -19,7 +19,7 @@ locationsRouter.get('/locs', async function (req, res) {
 })
 
 // Finde eine Location
-locationsRouter.get('/locs/:id', async function(req, res) {
+locationsRouter.get('/loc/:id', async function(req, res) {
     try {
         const locationId = req.params.id;
         let location = await findOneLocation(locationId);
@@ -35,7 +35,7 @@ locationsRouter.get('/locs/:id', async function(req, res) {
 });
 
 // Lösche eine Location
-locationsRouter.delete('/locs/:id', async function(req, res) {
+locationsRouter.delete('/loc/:id', async function(req, res) {
     try {
         const locationId = req.params.id;
         let location = await deleteOneLocation(locationId); 
@@ -43,6 +43,7 @@ locationsRouter.delete('/locs/:id', async function(req, res) {
             res.status(200).json(location);
         } else {
             res.status(400).send(`Location mit ID ${locationId} nicht gefunden!`);
+        
         }
     } catch (err) {
         console.log(err);
