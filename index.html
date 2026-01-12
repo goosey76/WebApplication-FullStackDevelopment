@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BEKY's AEP</title> <!-- AwesomeEnvironmentProject -->
+  <link rel="stylesheet" href="public/style.css">
+  <script src="src/script.js"></script>
+</head>
+
+
+<body>
+
+<!-- Der Header (wird immer angezeigt) -->
+<header>
+  <h2>BeKy's Awesome Environment Project</h2>
+</header>
+
+
+<div class="parent">
+  <!-- Die Login-Seite (nach erfolgreichem Login verstecken)-->
+  <div class="main login" id="loginScreen">
+
+    <h1>BeKy's AEP</h1>
+    <h3>LOGIN</h3>
+
+    <form action="">
+
+      <label for="username">
+        Username:
+      </label>
+      <input type="text" id="username" name="username"
+             placeholder="Gib deinen Nutzernamen ein." required>
+
+      <label for="password">
+        Passwort:
+      </label>
+      <input type="password" id="password" name="password"
+             placeholder="Gib dein Passwort ein." required>
+
+      <div class="wrap">
+        <button id="loginButton" type="submit">
+          Login
+        </button>
+      </div>
+
+    </form>
+
+    <p> Du hast noch keinen Account?
+      <a href="#" style="text-decoration: none;">
+        Hier registrieren.
+      </a>
+    </p>
+  </div>
+
+
+  <!-- persönliche Willkommensnachricht -->
+  <p id="welcomeMessage" class="hide"></p>
+
+  <!-- Logout-Button -->
+  <button type="button" class="hide" id="logoutButton">
+    Ausloggen
+  </button>
+
+  <!-- Der Main Screen-->
+<div class="main hide" id="mainScreen">
+  <h1>Standorte</h1>
+  <hr>
+
+  <div id="location-list">
+    <!-- Locations werden hier generiert -->
+  </div>
+
+  <div class="wrap admin-controls">
+    <button type="button" class="admin-only" id="add-btn">Standort hinzufügen</button>
+  </div>
+</div>
+
+  <br>
+
+  <!-- Der Add-Screen -->
+  <div class="main extension hide"  id="addScreen">
+    <h1>Standort hinzufügen</h1>
+    <h3>HIER WERDEN NEUE STANDORTE HINZUGEFÜGT</h3>
+
+    <!-- Login Form Code -->
+    <form action="">
+      <!-- Titel -->
+      <label for="titel">
+        1. Titel: (*)
+      </label>
+      <input type="text" id="titel" name="titel"
+             placeholder="Welch ein Originaler Titel" required>
+
+      <!-- Standort -->
+      <label for="standort">
+        2. Beschreibung des Standorts:
+      </label>
+      <input type="text" id="standort" name="standort"
+             placeholder="Beschreibe den Standort">
+
+      <!-- Straße + Hausnummer -->
+      <label for="street+number">
+        3. Straße und Hausnummer: (*)
+      </label>
+      <input type="text" id="street+number" name="street+number"
+             placeholder="Die Straße und Hausnummer" required>
+
+
+      <!-- Straße + Hausnummer -->
+      <label for="plzStadt">
+        4. PLZ + Stadt: (*)
+      </label>
+      <input type="text" id="plzStadt" name="plzStadt"
+             placeholder="Die Postleitzahl und die Stadt" required>
+
+      <!-- Kategorie -->
+      <label for="category-select">5. Kategorie: (*)</label>
+      <select id="category-select" name="kategorie" required>
+        <option value="">-- Bitte wählen Sie eine Kategorie --</option>
+        <option value="Fahrrad">Fahrrad (Wege, Abschliessmöglichkeit)</option>
+        <option value="ÖPNV">ÖPNV</option>
+        <option value="Fußgänger:innen">Fußgänger:innen</option>
+        <option value="Straßenverkehr">Straßenverkehr(Baustellen, Verkehrsdichte)<</option>
+        <option value="Luft">Luft</option>
+        <option value="Industrieanlagen">Industrieanlagen</option>
+        <option value="Sonstige">Sonstige</option></option>
+      </select>
+
+      <!-- Bild hinzufügen -->
+      <label for="standortBild">
+        6. Bild des Standorts:
+      </label>
+      <input type="file" id="standortBild" name="standortBild" accept="image/*">
+
+      <!-- Geokoordinaten -->
+      <div class="coordinates-group">
+        <div>
+          <label for="breitenGrad">
+            Breitengrad:
+          </label>
+          <input type="text" id="breitenGrad" name="breitenGrad"
+                 readonly>
+        </div>
+
+        <div>
+          <label for="laengenGrad">
+            Längengrad:
+          </label>
+          <input type="text" id="laengenGrad" name="laengenGrad"
+                 readonly>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <button type="submit">
+          Speichern
+        </button>
+        <button class="cancel" type="button" id="cancel-add-btn">
+          Abbrechen
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <br>
+
+  <!-- Der Details-Screen -->
+  <div class="main extension hide" id="detailScreen">
+
+    <h1>DETAILS PAGE</h1>
+    <h3>HIER WERDEN DATEN BEARBEITET</h3>
+
+    <form id="detailsForm">
+      <!-- Login Form Code -->
+    
+      <!-- Titel -->
+      <label for="titel">
+        1. Titel: (*)
+      </label>
+      <input type="text" id="detail-title" name="titel" placeholder="Welch ein Originaler Titel" required>
+
+      <!-- Standort -->
+      <label for="standort">
+        2. Beschreibung des Standorts:
+      </label>
+      <input type="text" id="detail-description" name="standort" placeholder="Beschreibe den Standort">
+
+      <!-- Straße + Hausnummer -->
+      <label for="street+number">
+        3. Straße und Hausnummer: (*)
+      </label>
+      <input type="text" id="detail-address" name="street+number" placeholder="Die Straße und Hausnummer" required>
+
+
+      <!-- Straße + Hausnummer -->
+      <label for="plzStadt">
+        4. PLZ + Stadt: (*)
+      </label>
+      <input type="text" id="detail-plz" name="plzStadt" placeholder="Die Postleitzahl und die Stadt" required>
+
+
+      <!-- Kategorie -->
+      <label for="category-select">5. Kategorie: (*)</label>
+      <select id="detail-category" name="kategorie" required>
+        <option value="">-- Bitte wählen Sie eine Kategorie --</option>
+        <option value="Fahrrad">Fahrrad (Wege, Abschliessmöglichkeit)</option>
+        <option value="ÖPNV">ÖPNV</option>
+        <option value="Fußgänger:innen">Fußgänger:innen</option>
+        <option value="Straßenverkehr">Straßenverkehr(Baustellen, Verkehrsdichte)<</option>
+        <option value="Luft">Luft</option>
+        <option value="Industrieanlagen">Industrieanlagen</option>
+        <option value="Sonstige">Sonstige</option></option>
+      </select>
+
+      <!-- Bild hinzufügen -->
+      <label for="standortBild">
+        6. Bild des Standorts:
+      </label>
+      <input class="admin-only" type="file" id="detail-img" name="standortBild" accept="image/*">
+
+      <div id="bildVorschau">
+        <img id="previewImage" src="" alt="Kein Bild vorhanden." style="width:50%; height:50%">
+      </div>
+
+      <!-- Geokoordinaten -->
+      <div class="coordinates-group">
+        <div>
+          <label for="breitenGrad">
+            Breitengrad:
+          </label>
+          <input type="text" id="detail-lat" name="breitenGrad"readonly>
+        </div>
+
+        <div>
+          <label for="laengenGrad">
+            Längengrad:
+          </label>
+          <input type="text" id="detail-lon" name="laengenGrad" readonly>
+        </div>
+      </div>
+
+    <!-- Buttons -->
+  
+      <div class="wrap">
+        <button class="admin-only" type="submit" id="updateButton">Speichern </button>
+        <button class="admin-only" type="button" id="deleteButton">Löschen</button>
+        <button class="cancel" type="button" id="cancelButton">Abbrechen</button>
+      </div>
+    </form>
+  
+  </div>
+</div>
+
+</body>
+
+<footer>
+  <hr>
+  <br>
+  <b>Impressum & Datenschutzerklärung:</b>
+  <br><br>
+  BeKy's AEP - Awesome Environment Project:
+  <br>
+  Ein Projekt zur Verbesserung der Umweltwahrnehmung in der Stadt.
+  <br><br>
+  Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV: <br>
+  Benjamin Schulz, Ky Anh Pham
+  <br>
+  <a href="#" onclick="alert('Datenschutzerklärung: Mehr hier')">Datenschutzerklärung</a>
+  <br><br>
+  HTW-Berlin
+  Wilhelminenhofstr. 75A
+</footer>
+</html>

@@ -2,12 +2,11 @@
 //=== festgelegte Benutzer & Daten ===
 //====================================
 
-
 // Vorgelegte Benutzer
-// const USER = [
-//   { username:"admina", password:"password", role:"admin", name:"Mina" },
-//   { username:"normalo", password:"password", role:"non-admin", name:"Norman" }
-// ]
+const USER = [
+  { username:"admina", password:"password", role:"admin", name:"Mina" },
+  { username:"normalo", password:"password", role:"non-admin", name:"Norman" }
+]
 
 let currentUser = null;
 let currentEditLocationId = null;
@@ -22,69 +21,6 @@ const LOCATION = [
 //==================
 //=== Funktionen ===
 //==================
-
-/**
- * LogIn Handling von Admin und Normalo
- * @param {*} e 
- */
-function handleLogin(e) {
-  e.preventDefault();
-
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
-
-  usernameInput.classList.remove("error");
-  passwordInput.classList.remove("error");
-
-  const username = usernameInput.value.trim();
-  const password = passwordInput.value;
-
-  console.log("Trying to login:", username, password)
-
-  // Mongo DB backend Aufruf
-  fetch('/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ username, password })
-  })
-  .then(response => { // Wenn Response gültig von der Datenbank
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Login fehlgeschlagen');
-    }
-  })
-  .then(user => {
-    // Success Handling
-    currentUser = user;
-    console.log("Login erfolgreich als:", user.name, "Role:", user.role);
-
-    showScreen("mainScreen");
-    renderLocations();
-    console.log('Rendering Location');
-
-    const welcomeMessage = document.getElementById("welcomeMessage");
-    if(welcomeMessage) {
-      welcomeMessage.textContent = `Herzlich Willkomen, ${user.name}.`;
-      welcomeMessage.classList.remove("hide"); 
-    }
-
-    const logoutButton = document.getElementById("logoutButton");
-    if(logoutButton) {
-      logoutButton.classList.remove("hide"); 
-    }
-
-    handleAdminVisibility(user.role); 
-  })
-  .catch(error => {
-    // Error Handling
-  usernameInput.classList.add("error");
-  passwordInput.classList.add("error");
-  console.log("User not found: Invalid username or password.");
-  })
-}
 
 /**
  *  Gibt die Sichtenbesichtigung zwischen
@@ -249,6 +185,54 @@ async function handleUpdate(event) {
   showScreen('mainScreen');
 }
 
+
+/**
+ * LogIn Handling von Admin und Normalo
+ * @param {*} e 
+ */
+function handleLogin(e) {
+  e.preventDefault();
+
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+
+  usernameInput.classList.remove("error");
+  passwordInput.classList.remove("error");
+
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
+
+  const foundUser = USER.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (foundUser) {
+    currentUser = foundUser;
+    console.log("Login erfolgreich als:", foundUser.name, "Role:", foundUser.role);
+
+    showScreen("mainScreen");
+    renderLocations();
+    console.log('Rendering Location');
+
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    if(welcomeMessage) {
+      welcomeMessage.textContent = `Herzlich Willkomen, ${foundUser.name}.`;
+      welcomeMessage.classList.remove("hide"); 
+    }
+
+    const logoutButton = document.getElementById("logoutButton");
+    if(logoutButton) {
+      logoutButton.classList.remove("hide"); 
+    }
+
+    handleAdminVisibility(foundUser.role);
+
+  } else {
+    usernameInput.classList.add("error");
+    passwordInput.classList.add("error");
+    console.log("User not found: Invalid username or password.");
+  }
+}
 
 
 /**
@@ -438,6 +422,8 @@ async function handleAddLocation(event) {
   event.target.reset();
   showScreen('mainScreen');
 }
+
+
 
   /**
    * Admina darf: Standorte anlegen, existierende Standorte

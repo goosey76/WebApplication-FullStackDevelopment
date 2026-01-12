@@ -3,7 +3,8 @@ import { findAllUsers, findOneUser } from '../db/mongoCRUDs.js';
 
 let usersRouter = Router();
 
-// Wird bei GET http://localhost:8000/users aufgerufen 
+
+// Wird bei GET http://localhost:8000/users aufgerufen
 usersRouter.get('/', async function(req, res) {
   try {
     //let userDoc = await mongo_cruds.findOneUser("admina", "pass1234");
@@ -19,6 +20,7 @@ usersRouter.get('/', async function(req, res) {
     res.status(400).send("Something is not right!!");
   }
 });
+
 
 // Wird bei  
 // POST http://localhost:8000/users mit payload 

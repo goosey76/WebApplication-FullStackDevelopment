@@ -4,6 +4,7 @@ import express, { json, static as expressStatic} from 'express';
 import { join } from 'path';
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
+import locationsRouter from './routes/locs.js';
 import.meta.dirname;
 
 let app = express();
@@ -26,6 +27,10 @@ app.use('/', indexRouter);
 
 // 2) http://localhost:8000/users
 app.use('/users', usersRouter);
+
+// Benutzte Locs 
+// http://localhost:8000/locs
+app.use('/locs', locationsRouter);
 
 // 3) Send "Not found" for all other 'paths'
 app.use(function(req, res) {

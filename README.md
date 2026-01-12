@@ -1,42 +1,24 @@
-# Template für Beleg 4
+Das Projekt dokumentiert und visualisiert Orte und Standorte in Berlin, die als nicht-nachhaltig oder umweltfeindlich eingestuft werden, sowie Regionen, in denen es an essenzieller nachhaltiger Infrastruktur mangelt.
 
-## Beschreibung
-Eine Projektvorlage für den 4. Beleg im Kurs "Web Application Development".
-Genutzte Packages:
-- Express (Node.js)
-- MongoDb Driver für Node.js
-Verzeichnisstrucktur:
-  public/   - hier kommt Ihr Frontend-Code rein: index.html, css-Dateien, Images, Browser-JS-Code
-  src/      - Backend-JS-Code 
+--------------------
 
-- http://localhost:8000/ zeigt die index.html an
-- http://localhost:8000/users - Beispiel für den REST-Endpoint /users
+• The name of the app:
+	BeKys-AEP
+	BENJAMIN + KY ANH's - AWESOME ENVIRONMENT PROJECT
 
-## 1) Installation der packages
-npm install
+• OUR NAMES:
+	BENJAMIN SCHULZ
+	KY ANH PHAM
 
-## 2) Code anpassen
-in src/db/mongoCRUDs.js 
-Diese Konstanten mit Ihren Daten belegen
-const db_user = "";
-const db_pass = "";
-const db_name = "";
-const db_collection = "";
+• OUR MATRIKELS: 
+	B: S0594271
+	K: S0586881
 
-NICHT VERGESSEN der MONGODB-SERVER ist außerhalb der HTW nur über VPN erreichbar!
+• A short descripon of the app:
 
-## 3) Server starten
-npm start
+Kern-Funktion:
+Die Anwendung ist eine Single Page Application (SPA), die eine Liste dieser Standorte darstellt und einen rollenbasierten Zugriff bietet:
 
-## 4) App testen
-Im Browser: 
- - http://localhost:8000/ öffnen
- - index.html aus public/ wird angezeigt, login-Funktionalität ist aber nicht implementiert
-In Postman:
-- GET http://localhost:8000/users
+Admins können neue Standorte hinzufügen und bestehende Daten verwalten (CRUD-Operationen).
 
-- POST http://localhost:8000/users 
-mit Header:
-Content-Type: applicaion/json
-mit Payload:
- {"username":"admina", "password":"password"}
+Normale Nutzer haben eine reine Leseansicht.
