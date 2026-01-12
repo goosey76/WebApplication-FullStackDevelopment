@@ -1,7 +1,45 @@
 import { Router } from 'express';
-import { deleteOneLocation, findAllLocations, findOneLocation } from '../db/mongoCRUDs.js'
+import { addOneLocation, deleteOneLocation, findAllLocations, findOneLocation } from '../db/mongoCRUDs.js'
 
 let locationsRouter = Router();
+
+/**
+ * Update One Location
+ */
+locationsRouter.put('/loc/:id', async function(req, res) {
+    try {
+        const locationId = req.params.id; // Get Id von der URL
+        const updatedData = req.body; // Get updated - Data vom payload
+
+        let result = await updateOneLocation(locationId, updatedData);
+        
+        if (result === 1) {
+            res.status(204).send(); // Erfolgereicher Update.
+        } else {
+            res.status(404).send(`Location mit ID ${locationId} nicht gefunden!`);
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Interner Server Fehler, beim Update von einer Location");    }
+})
+
+/**
+ * Füge eine Location mit LocationHeader
+ */
+locationsRouter.post('/loc', async function (req, res) {
+    try {
+        const locationData = req.body; // Location data without ID
+        let newLocations = await addOneLocation(locationData);
+
+        res.status(201)
+        .set('Location', `/loc/${newLocations._id}`)
+        .json({ id: newLocations._id }); // Gibt 201 und die neue Location
+    } catch (err) {
+        console.log(err)
+        res.status(500).send("Interner Server Fehler");
+    }
+});
+
 
 // Finde alle Locations
 locationsRouter.get('/loc', async function (req, res) {
@@ -40,7 +78,7 @@ locationsRouter.delete('/loc/:id', async function(req, res) {
         const locationId = req.params.id;
         let location = await deleteOneLocation(locationId); 
         if (location) {
-            res.status(200).json(location);
+            res.status(204).json(location);
         } else {
             res.status(400).send(`Location mit ID ${locationId} nicht gefunden!`);
         
