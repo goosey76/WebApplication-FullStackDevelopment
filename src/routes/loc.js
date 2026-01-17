@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { addOneLocation, deleteOneLocation, findAllLocations, findOneLocation } from '../db/mongoCRUDs.js'
+import { addOneLocation, deleteOneLocation, findAllLocations, findOneLocation, updateOneLocation } from '../db/mongoCRUDs.js'
 
 let locationsRouter = Router();
 
 /**
  * Update One Location
  */
-locationsRouter.put('/loc/:id', async function(req, res) {
+locationsRouter.put('/:id', async function(req, res) {
     try {
         const locationId = req.params.id; // Get Id von der URL
         const updatedData = req.body; // Get updated - Data vom payload
@@ -26,7 +26,7 @@ locationsRouter.put('/loc/:id', async function(req, res) {
 /**
  * Füge eine Location mit LocationHeader
  */
-locationsRouter.post('/loc', async function (req, res) {
+locationsRouter.post('/', async function (req, res) {
     try {
         const locationData = req.body; // Location data without ID
         let newLocations = await addOneLocation(locationData);
@@ -42,7 +42,7 @@ locationsRouter.post('/loc', async function (req, res) {
 
 
 // Finde alle Locations
-locationsRouter.get('/loc', async function (req, res) {
+locationsRouter.get('/', async function (req, res) {
     try {
         let locations = await findAllLocations();
         if (locations) {
@@ -57,7 +57,7 @@ locationsRouter.get('/loc', async function (req, res) {
 })
 
 // Finde eine Location
-locationsRouter.get('/loc/:id', async function(req, res) {
+locationsRouter.get('/:id', async function(req, res) {
     try {
         const locationId = req.params.id;
         let location = await findOneLocation(locationId);
@@ -73,7 +73,7 @@ locationsRouter.get('/loc/:id', async function(req, res) {
 });
 
 // Lösche eine Location
-locationsRouter.delete('/loc/:id', async function(req, res) {
+locationsRouter.delete('/:id', async function(req, res) {
     try {
         const locationId = req.params.id;
         let location = await deleteOneLocation(locationId); 

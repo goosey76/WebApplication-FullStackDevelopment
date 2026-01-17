@@ -2,8 +2,9 @@
 import { createServer } from 'http';
 import express, { json, static as expressStatic} from 'express';
 import { join } from 'path';
+import cors from 'cors';
 import indexRouter from './routes/index.js';
-import usersRouter from './routes/login.js';
+import usersRouter from './routes/users.js';
 import locationsRouter from './routes/loc.js';
 import.meta.dirname;
 
@@ -13,6 +14,9 @@ let app = express();
 // and only looks at requests where the Content-Type 
 // header matches the type option.
 app.use(json());
+
+// Enable CORS for all routes
+app.use(cors());
 
 /*
  * Setting up the routes
@@ -43,8 +47,10 @@ app.use(function(err, res) {
   res.status(err.status || 500).send('error' + err.message);
 });
 
+// BEnutze Umgebungsport Oder StandartPort
+const port =  process.env.PORT || 8000;
 
-const port = 8000;
+
 app.set('port', port);
 
 /*

@@ -2,22 +2,30 @@
 //=== festgelegte Benutzer & Daten ===
 //====================================
 
-
-// Vorgelegte Benutzer
-// const USER = [
-//   { username:"admina", password:"password", role:"admin", name:"Mina" },
-//   { username:"normalo", password:"password", role:"non-admin", name:"Norman" }
-// ]
-
 let currentUser = null;
 let currentEditLocationId = null;
 
 // Standorte aus dem HTML
-const LOCATION = [
-{ id: 1, title:"Blockierter Radweg an der HTW", description:"Hier ist ein Radweg blockiert.", address:"Ostendstr. 35", plzCity:"12459, Berlin", category: "Fahrrad", image:"img/ostend.png"},
-{ id: 2, title:"Radweg endet auf enger Straße", description:"Hier endet ein Radweg im nirgendwo.", address:"Roelckestr. 69", plzCity:"13086, Berlin", category: "Fahrrad", image:"img/roelcke.png"},
-{ id: 3, title:"Ersatzverkehr in Marzahn", description:"Hier ist Ersatzverkehr mit Bussen.", address:"S Marzahn", plzCity:"12679, Berlin", category: "ÖPNV", image:"placeholder.png"},];
+let LOCATION = [] // starte mit leerem array
 
+/**
+ *Fetch Locations von der MongoDB
+ */
+async function fetchLocations() {
+  try {
+    const response = await fetch('/loc');
+    if (response.ok) {
+      LOCATION = await response.json();
+      console.log("Locations loaded:", LOCATION.length);
+      return LOCATION;
+    } else {
+      console.error("Fehler beim Laden der Locations", response.status);
+      return [];
+    }
+  } catch (err) {
+    console.error("Fehler beim Laden der Locations:", err);
+  }
+}
 
 //==================
 //=== Funktionen ===
@@ -25,24 +33,38 @@ const LOCATION = [
 
 /**
  * LogIn Handling von Admin und Normalo
- * @param {*} e 
+ * @param {*} e
  */
 function handleLogin(e) {
+  console.log("==== Login Debug Start ====")
+  console.log("Event:", e);
+  console.log("Event type:", e ? e.type : 'no event');
+
+  // Verhindert Neu Laden der Seite
   e.preventDefault();
 
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
 
-  usernameInput.classList.remove("error");
-  passwordInput.classList.remove("error");
+  console.log("username input:", usernameInput);
+  console.log("password input:", passwordInput);
+
+if (!usernameInput || !passwordInput) {
+    console.error("Input elements not found!");
+    return;
+  }
 
   const username = usernameInput.value.trim();
   const password = passwordInput.value;
 
+  console.log("username value:", username);
+  console.log("password value:", password);
+
   console.log("Trying to login:", username, password)
 
+  console.log("About to fetch /login");
   // Mongo DB backend Aufruf
-  fetch('/users', {
+  fetch('/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -53,13 +75,13 @@ function handleLogin(e) {
     if (response.ok) {
       return response.json();
     } else {
-      throw new Error('Login fehlgeschlagen');
+      throw new Error('Login fehlgeschlagen ' + response.status);
     }
   })
   .then(user => {
     // Success Handling
     currentUser = user;
-    console.log("Login erfolgreich als:", user.name, "Role:", user.role);
+    console.log("Login erfolgreich als:", currentUser, "Role:", currentUser.role);
 
     showScreen("mainScreen");
     renderLocations();
@@ -68,21 +90,22 @@ function handleLogin(e) {
     const welcomeMessage = document.getElementById("welcomeMessage");
     if(welcomeMessage) {
       welcomeMessage.textContent = `Herzlich Willkomen, ${user.name}.`;
-      welcomeMessage.classList.remove("hide"); 
+      welcomeMessage.classList.remove("hide");
     }
 
     const logoutButton = document.getElementById("logoutButton");
     if(logoutButton) {
-      logoutButton.classList.remove("hide"); 
+      logoutButton.classList.remove("hide");
     }
 
-    handleAdminVisibility(user.role); 
+    handleAdminVisibility(user.role);
   })
   .catch(error => {
     // Error Handling
-  usernameInput.classList.add("error");
-  passwordInput.classList.add("error");
-  console.log("User not found: Invalid username or password.");
+    usernameInput.classList.add("error");
+    passwordInput.classList.add("error");
+    console.error("Login failed:", error);
+    alert("Login fehlgeschlagen: Ungültige Anmeldeinformationen");
   })
 }
 
@@ -94,13 +117,13 @@ function handleLogin(e) {
 function handleAdminVisibility(role) {
 // suche alle admin Elemente - > Hier Speichern-Löschen Button
 const adminElements = document.querySelectorAll('.admin-only');
-  
+
   // admin-only Klasse wird hier sichtbar gemacht
   if (role === 'admin') {
     adminElements.forEach((element) => {
       element.style.display = 'block';
     });
-    
+
   } else {
     // Normalos: admin-only Klasse wird hier nicht sichtbar gemacht
     adminElements.forEach((element) => {
@@ -108,7 +131,6 @@ const adminElements = document.querySelectorAll('.admin-only');
     });
   }
 }
-
 
 /**
  * Zentrale steuerung der Screens
@@ -131,7 +153,6 @@ function showScreen(screenIdToShow) {
     }
   });
 }
-
 
 /**
  * called die API für Geokoordinaten (Nominatim)
@@ -181,7 +202,6 @@ async function fetchCoordinates(addressString) {
     }
 }
 
-
 /**
  * Updated die Felder von den Standort
  * @param {*} event Bei änderung des Standortes und seine Felder
@@ -221,7 +241,7 @@ async function handleUpdate(event) {
         console.warn('Keine Koordinaten gefunden, lasse lat/lon unverändert.');
     }
 
-  let image = LOCATION.find(loc => loc.id === currentEditLocationId)?.image || 'placeholder.png';
+  let image = LOCATION.find(loc => loc._id === currentEditLocationId)?.image || 'placeholder.png';
 
   const fileInput = document.getElementById('detail-img');
   if (fileInput.files[0]) {
@@ -237,19 +257,31 @@ async function handleUpdate(event) {
 
   const updatedData = { title, description, address, plzCity, category, lat, lon, image };
 
-  const index = LOCATION.findIndex(loc => loc.id === currentEditLocationId);
-  if (index !== -1) {
-      LOCATION[index] = { ...LOCATION[index], ...updatedData };
+  // Updated die Daten von der Location in die Datenbank
+  try {
+    const response = await fetch(`/loc/${currentEditLocationId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': "application/json",
+      },
+      body : JSON.stringify(updatedData)
+    });
+
+    if (response.ok) {
+      // Refresh locations from database to ensure we have the latest data
+      await fetchLocations();
       alert(`Standort ${title} erfolgreich gespeichert!`);
+      currentEditLocationId = null;
+      renderLocations();
+      showScreen('mainScreen');
+    } else {
+      alert("Fehler beim Aktualisieren");
+    }
+  } catch (err) {
+    console.error('Fehler:', err);
+    alert('Netzwerkfehler');
   }
-
-  currentEditLocationId = null;
-
-  renderLocations();
-  showScreen('mainScreen');
 }
-
-
 
 /**
  * Logout Button und Reset von der Form -> zum LoginScreen
@@ -282,7 +314,7 @@ function handleLogout() {
  * @returns den addScreen oder FehlerMeldung wenn die Rolle nicht stimmt.
  */
 function handleAddLocationClick() {
-  
+
   // Admin Rechte überprüfen zum Speichern
   if (!currentUser || currentUser.role !== 'admin') {
       alert("Sie haben keine Berechtigung, Standorte zu speichern oder zu aktualisieren.");
@@ -311,22 +343,22 @@ function renderLocations() {
     LOCATION.forEach(location => {
         const card = document.createElement('article');
         card.className = 'location-card';
-        card.id = `location-${location.id}`;
+        card.id = `location-${location._id}`;
 
         card.innerHTML = `
-      <h3 class="location-title">${location.title}</h3>
-      <div class="location-meta">
-        <p><strong>Adresse:</strong> ${location.address}, ${location.plzCity}</p>
-        <p><strong>Kategorie:</strong> ${location.category}</p>
-        <div class="list-img">
-          <img src="${location.image}" alt="Kein Bild vorhanden.">
+          <h3 class="location-title">${location.title}</h3>
+          <div class="location-meta">
+          <p><strong>Adresse:</strong> ${location.address}, ${location.plzCity}</p>
+          <p><strong>Kategorie:</strong> ${location.category}</p>
+          <div class="list-img">
+            <img src="${location.image}" alt="Kein Bild vorhanden.">
         </div>
       </div>
     `;
 
         // Add click event for details
         card.addEventListener('click', () => {
-            currentEditLocationId = location.id;
+            currentEditLocationId = location._id;
             showScreen('detailScreen');
 
             document.getElementById('detail-title').value = location.title;
@@ -367,9 +399,9 @@ function renderLocations() {
     });
 }
 
-
 /**
  * fügt den neuen Standort in die Liste hinzu und aktuallisiert die MainPage
+ * Diese Soll POST /loc nutzen
  * @param {*} event Beim zufuegen des Standortes
  * @returns die neue Liste
  */
@@ -432,84 +464,126 @@ async function handleAddLocation(event) {
       lon
   };
 
-  LOCATION.push(newLocation);
-  renderLocations();
+  // Instead Of Location push. wird post verwendet
+  // LOCATION.push(newLocation);
+  try {
+    const response = await fetch('/loc', {
+      method: 'Post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body : JSON.stringify(newLocation)
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      newLocation._id = result.id; // Fügt die neue Id hinzu
+      LOCATION.push(newLocation);
+      renderLocations();
+      showScreen('mainScreen');
+    } else {
+      alert('Fehler beim Speichern des Standortes');
+      console.error('Fehler:', err);
+      alert('Netzwerkfehler');
+    }
+  } catch (err) {
+    console.error ('Fehler:', err);
+    alert('Netzwerkfehler');
+  }
 
   event.target.reset();
-  showScreen('mainScreen');
 }
 
-  /**
-   * Admina darf: Standorte anlegen, existierende Standorte
-   *              löschen und bearbeiten
-   * Normalo darf:sich alle Standorte angucken,
-   *              aber nicht löschen oder bearbeiten
-   *              darf diese weder bearbeiten noch
-   *              löschen. ‚normalo‘ darf keine Standorte anlegen
-   */
-  document.addEventListener("DOMContentLoaded", () => {
+/**
+ * Admina darf: Standorte anlegen, existierende Standorte
+ *              löschen und bearbeiten
+ * Normalo darf:sich alle Standorte angucken,
+ *              aber nicht löschen oder bearbeiten
+ *              darf diese weder bearbeiten noch
+ *              löschen. ‚normalo‘ darf keine Standorte anlegen
+ */
+document.addEventListener("DOMContentLoaded", async () => {
+    console.log("=== DOM CONTENT LOADED ===");
 
-  // Login Form und Handling.   
-  const loginForm = document.querySelector("#loginScreen form");
-  if(loginForm) {
-    loginForm.addEventListener("submit", handleLogin);
-  }
+    // Lade Die Locations als erstes
+    await fetchLocations();
+    renderLocations();
 
-  // logout and reset 
-  const logoutButton = document.querySelector("#logoutButton");
-  if (logoutButton) { 
-    logoutButton.addEventListener("click", handleLogout)
-  }
+    // Login Form und Handling.
+    const loginForm = document.getElementById("loginForm");
+    console.log("loginForm element:", loginForm);
+    if(loginForm) {
+      loginForm.addEventListener("submit", handleLogin);
+      console.log("Login event listener attached successfully!");
+    } else {
+      console.error("loginForm form not found! Cannot attach event listener");
+    }
 
-  // Update Eventhandler für das Speichern vom Bereits bestehenden Locations Button
-  const detailsForm = document.getElementById('detailsForm');
-  if(detailsForm) {
-    detailsForm.addEventListener('submit', handleUpdate);
-  }
+    // logout and reset
+    const logoutButton = document.querySelector("#logoutButton");
+    if (logoutButton) {
+      logoutButton.addEventListener("click", handleLogout);
+    }
 
-  // Adminas Hinzufuegen eines neuen Standortes- Add-Button
-  const addButton = document.getElementById("add-btn");
-  if (addButton) {
-    addButton.addEventListener("click", handleAddLocationClick);
-  }
+    // Update Eventhandler für das Speichern vom Bereits bestehenden Locations Button
+    const detailsForm = document.getElementById('detailsForm');
+    if(detailsForm) {
+      detailsForm.addEventListener('submit', handleUpdate);
+    }
 
-  const addForm = document.querySelector('#addScreen form');
-  if(addForm) {
-    addForm.addEventListener('submit', handleAddLocation);
-  }
+    // Adminas Hinzufuegen eines neuen Standortes- Add-Button
+    const addButton = document.getElementById("add-btn");
+    if (addButton) {
+      addButton.addEventListener("click", handleAddLocationClick);
+    }
 
-  // Cancel Button vom Add-Button
-  const cancelAddButton = document.getElementById("cancel-add-btn");
-  if (cancelAddButton) {
-      cancelAddButton.addEventListener("click", handleCancel);
-  }
-  
-  // Cancel button vom DetailsScreen
-  const cancelButton = document.getElementById("cancelButton");
-  if (cancelButton) {
-      cancelButton.addEventListener("click", handleCancel);
-  }
+    const addForm = document.querySelector('#addScreen form');
+    if(addForm) {
+      addForm.addEventListener('submit', handleAddLocation);
+    }
 
-  // delete Button
-  const deleteButton = document.getElementById('deleteButton');
-  deleteButton.addEventListener('click', (e) => {
-    // Admin Rechte überprüfen zum Speichern
-  if (!currentUser || currentUser.role !== 'admin') {
-      alert("Sie haben keine Berechtigung, Standorte zu speichern oder zu aktualisieren.");
-      return;
-  }
+    // Cancel Button vom Add-Button
+    const cancelAddButton = document.getElementById("cancel-add-btn");
+    if (cancelAddButton) {
+        cancelAddButton.addEventListener("click", handleCancel);
+    }
 
-  // entferne vom Array
-  const index = LOCATION.findIndex(loc => loc.id === currentEditLocationId);
-  if (index !== -1) {
-    LOCATION.splice(index, 1);
-  }
+    // Cancel button vom DetailsScreen
+    const cancelButton = document.getElementById("cancelButton");
+    if (cancelButton) {
+        cancelButton.addEventListener("click", handleCancel);
+    }
 
-  // Renderr
-  renderLocations();
-  showScreen('mainScreen');
-  currentEditLocationId == null;
-  })
+    // delete Button
+    const deleteButton = document.getElementById('deleteButton');
+    if (deleteButton) {
+      deleteButton.addEventListener('click', async (e) => {
+        // Admin Rechte überprüfen zum Speichern
+        if (!currentUser || currentUser.role !== 'admin') {
+            alert("Sie haben keine Berechtigung, Standorte zu speichern oder zu aktualisieren.");
+            return;
+        }
 
-  });
+        try {
+          // Lösche aus der Datenbank
+          const response = await fetch(`/loc/${currentEditLocationId}`, {
+            method: 'DELETE'
+          });
 
+          if (response.ok) {
+            // Wenn erfolgreich gelöscht, aktualisiere die Liste
+            await fetchLocations();
+            renderLocations();
+            showScreen('mainScreen');
+            currentEditLocationId = null;
+            alert('Standort erfolgreich gelöscht!');
+          } else {
+            alert('Fehler beim Löschen des Standortes');
+          }
+        } catch (err) {
+          console.error('Fehler beim Löschen:', err);
+          alert('Netzwerkfehler beim Löschen');
+        }
+      });
+    }
+});
