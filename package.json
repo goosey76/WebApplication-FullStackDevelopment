@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": "true",
   "type": "module",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "mocha --exit tests/*",
     "start": "node src/server.js"
