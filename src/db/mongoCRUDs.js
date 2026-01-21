@@ -12,10 +12,15 @@ let db;
  */
 async function connectToDatabase() {
   if (!client) {
-    client = new MongoClient(MONGODB_URI);
-    await client.connect();
-    db = client.db(DB_NAME);
-    console.log('Connected to MongoDB');
+    try {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db(DB_NAME);
+      console.log('Connected to MongoDB');
+    } catch (error) {
+      console.error('Failed to connect to MongoDB:', error);
+      throw error;
+    }
   }
   return db;
 }
@@ -91,6 +96,11 @@ export async function findAllLocations() {
  */
 export async function findOneLocation(locationId) {
   try {
+    // Validate ObjectId format
+    if (!ObjectId.isValid(locationId)) {
+      return null;
+    }
+    
     const database = await getDb();
     const location = await database.collection('locations').findOne({ 
       _id: new ObjectId(locationId) 
@@ -131,6 +141,16 @@ export async function addOneLocation(locationData) {
  */
 export async function updateOneLocation(locationId, updatedData) {
   try {
+    // Validate ObjectId format
+    if (!ObjectId.isValid(locationId)) {
+      return 0;
+    }
+    
+    // Validate that there's data to update
+    if (!updatedData || Object.keys(updatedData).length === 0) {
+      return 0;
+    }
+    
     const database = await getDb();
     
     // Remove _id from updatedData if it exists to avoid immutable field error
@@ -155,6 +175,11 @@ export async function updateOneLocation(locationId, updatedData) {
  */
 export async function deleteOneLocation(locationId) {
   try {
+    // Validate ObjectId format
+    if (!ObjectId.isValid(locationId)) {
+      return 0;
+    }
+    
     const database = await getDb();
     const result = await database.collection('locations').deleteOne({ 
       _id: new ObjectId(locationId) 
