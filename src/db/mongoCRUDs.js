@@ -2,6 +2,9 @@ import { MongoClient, ObjectId } from "mongodb";
 // Neuer Push
 
 // Replace db_user, db_pass, db_name, db_collection
+// Eigentlich gehören hier die Credentials into .env
+// Diese sind aber für Referenz hier drin. 
+// Durch VPN der Hochschule nicht erreichbar.
 const db_user = 'beky_kyanh';
 const db_pass = 'Px2FFPjRz';
 const db_name = 'beky';
