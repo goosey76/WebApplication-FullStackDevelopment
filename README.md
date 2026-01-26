@@ -7,8 +7,7 @@ Das Projekt dokumentiert und visualisiert Orte und Standorte in Berlin, die als 
 	BENJAMIN + KY ANH's - AWESOME ENVIRONMENT PROJECT
 
 • OUR NAMES:
-	BENJAMIN SCHULZ
-	KY ANH PHAM
+	BENJAMIN SCHULZ + KY ANH PHAM
 
 • OUR MATRIKELS:
 	B: S0594271
@@ -64,6 +63,23 @@ Dieses Semesterprojekt wurde als umfassende Webanwendung entwickelt, die folgend
    - Asynchrone API-Aufrufe mit Fetch-API
    - Dynamische UI-Updates ohne Seitenneuladung
    - Fehlerbehandlung und Benutzerfeedback
+
+4. **Interaktive Karte:**
+   - Integration von Mapbox GL JS für interaktive Kartenvisualisierung
+   - 2/3 Karte, 1/3 Listen-Layout für optimale Übersicht
+   - Hover-Effekte: Maus über Listen-Element hebt entsprechenden Marker hervor
+   - Klick auf Standort öffnet Detailansicht
+   - Automatische Marker-Aktualisierung bei Adressänderungen
+   - Validierung von Adressen mit Nominatim (OpenStreetMap)
+   - Benutzerfreundliche Fehlermeldungen bei ungültigen Adressen
+
+5. **Bildverwaltung:**
+   - Bild-Upload bei Standorterstellung (optional)
+   - Bild-Validierung (JPG, PNG, GIF, max. 2MB)
+   - Bild-Vorschau in Detailansicht
+   - Hinzufügen, Ersetzen und Löschen von Bildern
+   - Automatische Bild-Entfernung beim Löschen von    Standorten
+   - Speicherung als Base64 in MongoDB
 
 ### Lernerfolge und Kompetenzen
 

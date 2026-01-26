@@ -3,12 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>BEKY's AEP</title> <!-- AwesomeEnvironmentProject -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0";>
   <link rel="stylesheet" href="css/style.css">
+  <script src='https://api.mapbox.com/mapbox-gl-js/v3.18.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v3.18.0/mapbox-gl.css' rel='stylesheet' />
   <script src="js/script.js" defer></script>
+
 </head>
 
 
 <body>
+  
 
 <!-- Der Header (wird immer angezeigt) -->
 <header>
@@ -66,8 +71,18 @@
   <h1>Standorte</h1>
   <hr>
 
-  <div id="location-list">
-    <!-- Locations werden hier generiert -->
+  <div class="main-content-container">
+
+    <!-- Map Container 2/3 -->
+    <div class="map-container">
+      <div id='map'></div>
+    </div>
+    <!-- Location List Container 2/3 -->
+    <div class="location-list-container">
+      <div id="location-list">
+        <!-- Locations werden hier generiert -->
+      </div>
+    </div>
   </div>
 
   <div class="wrap admin-controls">
@@ -75,7 +90,7 @@
   </div>
 </div>
 
-  <br>
+<br>
 
   <!-- Der Add-Screen -->
   <div class="main extension hide"  id="addScreen">
@@ -219,8 +234,13 @@
       <input class="admin-only" type="file" id="detail-img" name="standortBild" accept="image/*">
 
       <div id="bildVorschau">
-        <img id="previewImage" src="" alt="Kein Bild vorhanden." style="width:50%; height:50%">
+        <img id="previewImage" src="" alt="Bildvorschau" style="max-width:200px; max-height:200px; margin-top: 10px">
       </div>
+
+      <!-- Delete Button --> 
+      <button type="button" id="deleteImageButton" class="admin-only" style="margin-top: 10px; background-color: #f44336;">
+        Bild löschen.
+      </button>
 
       <!-- Geokoordinaten -->
       <div class="coordinates-group">
