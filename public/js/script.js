@@ -1,49 +1,13 @@
 //====================================
-//=== festgelegte Benutzer & Daten ===
+//=== Globale Variablen ===
 //====================================
 
 let currentUser = null;
 let currentEditLocationId = null;
 let currentImageToDelete = false;
 
-
 // Standorte aus dem HTML
 let LOCATION = [] // starte mit leerem array
-
-/**
- *Fetch Locations von der MongoDB
- */
-async function fetchLocations() {
-  try {
-    const response = await fetch('/loc');
-    
-    if (response.ok) {
-      LOCATION = await response.json();
-      console.log("✅Locations loaded:", LOCATION.length);
-
-      // Debug: Check, falls Map Verfügbar ist.
-      console.log("🗺️ Ist Verfügbar", !!window.currentMap);
-
-      // Füge NUR Markierer Zu, wenn Locations geladen werden.
-      if (window.currentMap && LOCATION.length > 0)  {
-        console.log("🗺️ Füge Markierer hinzu");
-        addMarkersToMap();
-      } else {
-        console.log("🗺️ Keine Marker hinzugefügt", {
-          map: !!window.currentMap,
-          locations: LOCATION.length
-        });
-      }
-
-      return LOCATION;
-    } else {
-      console.error("Fehler beim Laden der Locations", response.status);
-      return [];
-    }
-  } catch (err) {
-    console.error("Fehler beim Laden der Locations:", err);
-  }
-}
 
 //==================
 //=== Funktionen ===
@@ -220,6 +184,40 @@ function initializeMap() {
     return null;
   }
 }
+/**
+ *Fetch Locations von der MongoDB
+ */
+async function fetchLocations() {
+  try {
+    const response = await fetch('/loc');
+    
+    if (response.ok) {
+      LOCATION = await response.json();
+      console.log("✅Locations loaded:", LOCATION.length);
+
+      // Debug: Check, falls Map Verfügbar ist.
+      console.log("🗺️ Ist Verfügbar", !!window.currentMap);
+
+      // Füge NUR Markierer Zu, wenn Locations geladen werden.
+      if (window.currentMap && LOCATION.length > 0)  {
+        console.log("🗺️ Füge Markierer hinzu");
+        addMarkersToMap();
+      } else {
+        console.log("🗺️ Keine Marker hinzugefügt", {
+          map: !!window.currentMap,
+          locations: LOCATION.length
+        });
+      }
+
+      return LOCATION;
+    } else {
+      console.error("Fehler beim Laden der Locations", response.status);
+      return [];
+    }
+  } catch (err) {
+    console.error("Fehler beim Laden der Locations:", err);
+  }
+}
 
 /**
  * Fügt Markers zur Map für alle locations mit Koordinaten
@@ -235,7 +233,7 @@ function addMarkersToMap() {
   }
 
   // Check, falls Location verfügbar sind
-  if (!LOCATION || LOCATION === 0) {
+  if (!LOCATION || LOCATION.length === 0) {
     console.warn("Cannot add markers: Keine Locations");
     return;
   }
@@ -305,8 +303,40 @@ function addMarkersToMap() {
       console.error(`Error beim Marker hinzufügen für ${location.title}`, err);
     }
   });
-  console.log(`✅ Marker hinzugefügt: ${location}`);
-} 
+  console.log(`✅ Marker hinzugefügt: ${locationsWithCoords.length} Marker`);
+}
+
+/**
+ * Fügt den Highlighter zu einem Marker
+ */
+function highlightMarker(locationId) {
+  if (window.markers) {
+    const marker = window.markers.find(m => m._locationId === locationId);
+    if (marker && marker._element) {
+      marker._element.style.width = '45px';
+      marker._element.style.height = '45px';
+      marker._element.style.zIndex = '100';
+      marker._element.style.boxShadow = '0 0 15px 5px rgba(255, 255, 0, 0.7)';
+      marker._element.style.borderWidth = '3px';
+    }
+  }
+}
+
+/** 
+ * Entfernt den Highlighter
+ */
+function unHighlightMarker(locationId) {
+  if (window.markers) {
+    const marker = window.markers.find(m => m._locationId === locationId);
+    if (marker && marker._element) {
+      marker._element.style.width = '30px';
+      marker._element.style.height = '30px';
+      marker._element.style.zIndex = '1';
+      marker._element.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+      marker._element.style.borderWidth = '2px';
+    }
+  }
+}
 
 /**
  * Helper Function basierend auf den Kategorien für die MarkerFarben
@@ -417,13 +447,15 @@ async function handleUpdate(event) {
     }
 
 
-  let image = LOCATION.find(loc => loc._id === currentEditLocationId)?.image || '/Users/goosey/WebApplications/Beleg5_Map_Integration/ky-anhs-beleg-5/img/image.png';
+  let image = LOCATION.find(loc => loc._id === currentEditLocationId)?.image || '';
 
   // Handle image deletion
   if (currentImageToDelete) {
       image = ''; // Set to empty string to remove image
       currentImageToDelete = false; // Reset for next time
-  } else if (fileInput.files[0]) {
+  } else {
+      const fileInput = document.getElementById('standortBild');
+      if (fileInput && fileInput.files[0]) {
       const file = fileInput.files[0];
 
       // File Typ Validierung
@@ -453,6 +485,7 @@ async function handleUpdate(event) {
       reader.readAsDataURL(file);
       // Warte auf das Laden (da async, könnte ein Promise verwendet werden, aber für Einfachheit: annehmen, dass es schnell ist)
       await new Promise(resolve => reader.onload = () => { image = reader.result; resolve(); });
+      }
   }
 
   const updatedData = { title, description, address, plzCity, category, lat, lon, image };
@@ -598,7 +631,7 @@ function renderLocations() {
               deleteImageButton.addEventListener('click', () => {
                 if(confirm("Möchtest du das Bild wirklich löschen?")) {
                   // Reset preview to default image
-                  document.getElementById('previewImage').src = '/Users/goosey/WebApplications/Beleg5_Map_Integration/ky-anhs-beleg-5/img/image.png';
+                  document.getElementById('previewImage').src = '';
 
                   // Mark for deletion
                   currentImageToDelete = true;
@@ -662,35 +695,6 @@ function renderLocations() {
 
   } catch (err) {
     console.error('Fehler beim Laden der Locations', err);
-  }
-}
-
-/**
- * Fügt den Highlighter zu einem Marker
- */
-function highlightMarker(locationId) {
-  if (window.markers) {
-    const marker = window.markers.find(m => m._locationId === locationId);
-    if (marker && marker._element) {
-      marker._element.style.width = '45px';
-      marker._element.style.height = '45px';
-      marker._element.style.zIndex = '100';
-      marker._element.style.boxShadow = '0 0 15px 5px rgba(255, 255, 0, 0.7)';
-      marker._element.style.borderWidth = '3px';
-    }
-  }
-}
-
-function unHighlightMarker(locationId) {
-  if (window.markers) {
-    const marker = window.markers.find(m => m._locationId === locationId);
-    if (marker && marker._element) {
-      marker._element.style.width = '30px';
-      marker._element.style.height = '30px';
-      marker._element.style.zIndex = '1';
-      marker._element.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
-      marker._element.style.borderWidth = '2px';
-    }
   }
 }
 
@@ -786,7 +790,7 @@ async function handleAddLocation(event) {
   // LOCATION.push(newLocation);
   try {
     const response = await fetch('/loc', {
-      method: 'Post',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -801,8 +805,6 @@ async function handleAddLocation(event) {
       showScreen('mainScreen');
     } else {
       alert('Fehler beim Speichern des Standortes');
-      console.error('Fehler:', err);
-      alert('Netzwerkfehler');
     }
   } catch (err) {
     console.error ('Fehler:', err);
